@@ -81,6 +81,10 @@ class SeriesSession {
         $series = get_post_meta($session->ID, '_cf_series', true);
         $video_url = get_post_meta($session->ID, '_cf_video_url', true);
         
+        if($display_date == '') {
+            $display_date = date('m/d/Y');
+        }
+        
         ?>
         <h4>Display Date</h4>
         <p>This is the date the session will appear on the site. All sessions

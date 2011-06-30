@@ -52,6 +52,10 @@ class Devotional {
         $verses = get_post_meta($devotional->ID, '_cf_daily_verses', true);
         $footer = get_post_meta($devotional->ID, '_cf_footer', true);
         
+        if($display_date == '') {
+            $display_date = date('m/d/Y');
+        }
+        
         ?>
         <h4>Display Date</h4>
         <p>This is the date the devotional will appear on the site. All devotionals
