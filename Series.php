@@ -90,7 +90,7 @@ class Series {
                 <tr valign="top">
                     <td>
                         <input type="submit" name="save" value="Save Series" class="button-primary" />
-                        <a class="button-secondary" href="admin.php?page=cf-series/Series.php">Back to List</a>
+                        <a class="button-secondary" href="admin.php?page=cf-wp-series/Series.php">Back to List</a>
                     </td>
                 </tr>
             </table>
@@ -109,7 +109,7 @@ class Series {
     ?>
     <div class="wrap">
         <?php screen_icon('plugins') ?>
-        <h2>CF Series Settings <a href="admin.php?page=cf-series/Series.php_series" class="button">Add New Series</a></h2>
+        <h2>CF Series Settings <a href="admin.php?page=cf-wp-series/Series.php_series" class="button">Add New Series</a></h2>
         <p>Select a series below to edit corresponding options.</p>
         <table class="widefat data">
             <thead>
@@ -129,7 +129,7 @@ class Series {
                     <?php foreach($series as $item) { ?>
                         <tr>
                             <td>
-                                <a href="admin.php?page=cf-series/Series.php_series&id=<?php echo $item->series_id ?>">
+                                <a href="admin.php?page=cf-wp-series/Series.php_series&id=<?php echo $item->series_id ?>">
                                     <?php echo $item->title ?>
                                 </a>
                             </td>
