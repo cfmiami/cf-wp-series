@@ -65,6 +65,16 @@ function editQuestion() {
        post: jQuery("#cf_post").val(),
        question_id: jQuery("#cf_question_id").val()
    };
+   
+   //Check required fields
+   var errors = "";
+   if(data.number == "") errors += "Number is required.\n";
+   if(data.question == "") errors += "Question is required.\n";
+   
+   if(errors != "") {
+       alert(errors);
+       return;
+   }
 
    jQuery.post('http://localhost/wordpress/wp-admin/admin-ajax.php', data, function(results) {
       tb_remove();

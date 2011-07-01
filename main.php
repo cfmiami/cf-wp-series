@@ -211,6 +211,12 @@ class CFSeries {
         return $columns;
     }
     
+    /**
+     * Displays the data for the new custom columns
+     * @global type $wpdb
+     * @param type $column_name
+     * @param type $post_id 
+     */
     function display_columns($column_name, $post_id) {
         global $wpdb;
         
@@ -235,6 +241,11 @@ class CFSeries {
 
 $cfseries = new CFSeries();
 
+/**
+ * Converts the given php string to a format suitable for MySQL
+ * @param type $date
+ * @return type 
+ */
 function to_mysql_date($date) {
     if($date == "") return;
 

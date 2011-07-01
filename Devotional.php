@@ -33,6 +33,9 @@ class Devotional {
         ));
     }
     
+    /**
+     * Registeres the meta boxes for devotionals
+     */
     function _devotional_meta_boxes() {
         add_meta_box('devo_info', 'Additional Information', array($this, '_devotional_information'), 
                 $this->post_type, 'normal', 'high');

@@ -199,11 +199,11 @@ class SeriesSession {
                     </tr>
                     <tr valign="top">
                         <th scope="row">Question</th>
-                        <td><textarea cols="55" rows="4" name="question" id="cf_question"><?php echo $question->question ?></textarea></td>
+                        <td><textarea style="width: 400px; height: 120px" name="question" id="cf_question"><?php echo $question->question ?></textarea></td>
                     </tr>
                     <tr valign="top">
                         <th scope="row">Comments</th>
-                        <td><textarea cols="55" rows="11" name="comments" id="cf_comments"><?php echo $question->comments ?></textarea></td>
+                        <td><textarea style="width: 400px;  height: 200px" name="comments" id="cf_comments"><?php echo $question->comments ?></textarea></td>
                     </tr>
                 </table>
                 <p>
