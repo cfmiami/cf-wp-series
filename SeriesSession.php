@@ -227,24 +227,5 @@ class SeriesSession {
         $wpdb->query('DELETE FROM cf_series_session_questions WHERE question_id = ' 
                 . esc_sql($_POST['id']));
     }
-    
-    function tinymce() {
-         ?>
-        <script type="text/javascript">
-            /* <![CDATA[ */
-             jQuery(function($) {
-                 var i=1;
-                 $('.customEditor textarea').each(function(e) {
-                     var id = $(this).attr('id');
-                     if (!id) {
-                         id = 'customEditor-' + i++;
-                         $(this).attr('id',id);
-                     }
-                     tinyMCE.execCommand('mceAddControl', false, id);
-                 });
-             });
-             /* ]]> */
-        </script><?php
-    }
 }
 ?>

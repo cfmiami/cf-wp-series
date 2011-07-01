@@ -34,7 +34,7 @@ class Devotional {
     }
     
     /**
-     * Registeres the meta boxes for devotionals
+     * Registers the meta boxes for devotionals
      */
     function _devotional_meta_boxes() {
         add_meta_box('devo_info', 'Additional Information', array($this, '_devotional_information'), 
@@ -89,26 +89,6 @@ class Devotional {
         
         <input type="hidden" name="post_type" value="<?php echo $this->post_type ?>" />
         <?php 
-        add_action('admin_print_footer_scripts',array($this,'tinymce'),99);
     }
-    
-    function tinymce() {
-         ?>
-        <script type="text/javascript">
-            /* <![CDATA[ */
-             jQuery(function($) {
-                 var i=1;
-                 $('.customEditor textarea').each(function(e) {
-                     var id = $(this).attr('id');
-                     if (!id) {
-                         id = 'customEditor-' + i++;
-                         $(this).attr('id',id);
-                     }
-                     tinyMCE.execCommand('mceAddControl', false, id);
-                 });
-             });
-             /* ]]> */
-        </script><?php
-        }
-    }
+}
 ?>
