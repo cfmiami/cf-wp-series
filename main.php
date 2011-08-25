@@ -173,14 +173,12 @@ class CFSeries {
         switch($_POST['post_type']) 
         {
             case 'cf_devotional':
-                $this->save_meta_data($post_id, '_cf_display_date');
                 $this->save_meta_data($post_id, '_cf_series');
                 $this->save_meta_data($post_id, '_cf_daily_verses');
                 $this->save_meta_data($post_id, '_cf_footer');
                 break;
             
             case 'cf_series_session':
-                $this->save_meta_data($post_id, '_cf_display_date');
                 $this->save_meta_data($post_id, '_cf_series');
                 $this->save_meta_data($post_id, '_cf_video_url');
                 $this->save_meta_data($post_id, '_cf_blurb');
@@ -203,7 +201,6 @@ class CFSeries {
                 $columns['author'] = 'Author';
                 $columns['cf_series_area'] = 'Area(s)';
                 $columns['cf_series'] = 'Series';
-                $columns['cf_date'] = 'Display Date';
                 $columns['date'] = 'Status';
                 break;
         }
@@ -228,10 +225,6 @@ class CFSeries {
                 echo $wpdb->get_var($wpdb->prepare($sql));
             break;
         
-            case 'cf_date':
-                echo get_post_meta($post_id, '_cf_display_date', true);
-                break;
-            
             case 'cf_series_area':
                 echo the_terms($post_id, 'series_area');
                 break;

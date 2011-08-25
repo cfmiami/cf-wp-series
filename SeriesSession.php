@@ -76,22 +76,12 @@ class SeriesSession {
     function additional_information($session) {
         global $wpdb;
         $series_list = $wpdb->get_results('SELECT * FROM cf_series ORDER BY start_date DESC');
-        
-        $display_date = get_post_meta($session->ID, '_cf_display_date', true);
+
         $series = get_post_meta($session->ID, '_cf_series', true);
         $video_url = get_post_meta($session->ID, '_cf_video_url', true);
         
-        if($display_date == '') {
-            $display_date = date('m/d/Y');
-        }
-        
         ?>
-        <h4>Display Date</h4>
-        <p>This is the date the session will appear on the site. All sessions
-            are numbered in order of display date.</p>
-        
-        <input type="text" name="_cf_display_date" class="date" value="<?php echo $display_date ?>" />
-        
+       
         <h4>Series</h4>
         <p>Please select the series this session should be located in.</p>
         
