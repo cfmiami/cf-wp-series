@@ -20,8 +20,7 @@ class Series {
               'title' => str_replace("\\", "",$_POST['title']),
               'description' => str_replace("\\", "", $_POST['description']),
               'start_date' => to_mysql_date($_POST['start']),
-              'end_date' => to_mysql_date($_POST['end']),
-              'devo_start' => to_mysql_date($_POST['devo_start'])
+              'end_date' => to_mysql_date($_POST['end'])
             );
 
             if(trim($_POST['devo_start']) === '') {
@@ -93,13 +92,6 @@ class Series {
                     </td>
                 </tr>
                 <tr valign="top">
-                    <th scope="row"><label for="end">Devotionals Start Date</label></th>
-                    <td>
-                        <input type="text" name="devo_start" class="date" value="<?php echo mysql2date('m/d/Y', $series['devo_start']) ?>" />
-                        <span class="description">The day the series devotionals should start.</span>
-                    </td>
-                </tr>
-                <tr valign="top">
                     <td>
                         <input type="submit" name="save" value="Save Series" class="button-primary" />
                         <a class="button-secondary" href="admin.php?page=cf-wp-series/Series.php">Back to List</a>
@@ -130,7 +122,6 @@ class Series {
                     <th>Description</th>
                     <th>Start Date</th>
                     <th>End Date</th>
-                    <th>Devotionals Start Date</th>
                 </tr>
             </thead>
             <tbody> 
@@ -149,7 +140,6 @@ class Series {
                             <td><?php echo $item->description ?></td>
                             <td><?php echo mysql2date('m/d/Y', $item->start_date) ?></td>
                             <td><?php echo mysql2date('m/d/Y', $item->end_date) ?></td>
-                            <td><?php echo mysql2date('m/d/Y', $item->devo_start) ?></td>
                         </tr>
                     <?php } ?>
                 <?php } ?>
@@ -160,7 +150,6 @@ class Series {
                     <th>Description</th>
                     <th>Start Date</th>
                     <th>End Date</th>
-                    <th>Devotionals Start Date</th>
                 </tr>
             </tfoot>
         </table>

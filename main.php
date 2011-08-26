@@ -74,24 +74,7 @@ class CFSeries {
             require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
             dbDelta($sql);
         }
-        
-        //Add the series question table
-        $tablename = 'cf_series_session_questions';
-        if($wpdb->get_var("SHOW TABLES LIKE '$tablename'") != $tablename) {
-            
-            $sql = "CREATE TABLE `$tablename` (
-                `question_id` INT( 11 ) NOT NULL AUTO_INCREMENT,
-                `post_id` INT( 11 ) NOT NULL,
-                `number` INT( 11 ) NOT NULL,
-                `question` VARCHAR( 400 ) NOT NULL,
-                `comments` VARCHAR( 4000 ) NULL,
-                PRIMARY KEY (`question_id`)
-                );";
-            
-            require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-            dbDelta($sql);
-        }
-        
+
         register_uninstall_hook(__FILE__, array($this, 'uninstall'));
     }
     
@@ -105,7 +88,6 @@ class CFSeries {
         
         //Remove the database table from the system.
         $wpdb->query("DROP TABLE IF EXISTS cf_series");
-        $wpdb->query("DROP TABLE IF EXISTS cf_series_session_questions");
     }
     
     /**
@@ -181,8 +163,8 @@ class CFSeries {
             case 'cf_series_session':
                 $this->save_meta_data($post_id, '_cf_series');
                 $this->save_meta_data($post_id, '_cf_video_url');
-                $this->save_meta_data($post_id, '_cf_blurb');
-                $this->save_meta_data($post_id, '_cf_information');
+                $this->save_meta_data($post_id, '_cf_group_questions');
+                $this->save_meta_data($post_id, '_cf_family_questions');
                 break;
         }
     }
