@@ -21,7 +21,7 @@ class CFSeries {
         add_action('admin_menu', array($this, 'admin_menu'));
         add_action('admin_init', array($this, 'include_resources'));
     }
-    
+
     /**
      * Adds css and javascript files needed for this plugins to the admin pages
      */
@@ -97,16 +97,7 @@ class CFSeries {
     public function init() {
         include 'Devotional.php';
         include 'SeriesSession.php';
-        
-        //Intialize the devotional post type. This will create a new post type
-        //for devotionals as well as create the meta data required.
-        new Devotional();
-        new SeriesSession();
-        
-        add_filter('manage_posts_columns', array($this, 'add_columns'), 10, 2);
-        add_action('manage_posts_custom_column', array($this, 'display_columns'), 10, 2);
-        add_action('save_post', array($this, 'save'));
-        
+
         //Create the taxomonies used by the new post types
         register_taxonomy('series_area', array('cf_series_session', 'cf_devotional'), array(
             'hierarchical' => true,
@@ -129,6 +120,59 @@ class CFSeries {
                 'parent_item_colon' => 'Parent Series Area:'
             )
         ));
+
+        //Initialize the devotional post type. This will create a new post type
+        //for devotionals as well as create the meta data required.
+        new Devotional();
+        new SeriesSession();
+
+        add_filter('manage_posts_columns', array($this, 'add_columns'), 10, 2);
+        add_filter('parse_query', array($this, 'parse_query'));
+
+        add_action('restrict_manage_posts', array($this, 'restrict_manage_posts'));
+        add_action('manage_posts_custom_column', array($this, 'display_columns'), 10, 2);
+        add_action('save_post', array($this, 'save'));
+    }
+
+    function parse_query($query) {
+        global $pagenow;
+        if ( is_admin() && $pagenow=='edit.php' && isset($_GET['series']) && $_GET['series'] != '') {
+            $query->query_vars['meta_key'] = '_cf_series';
+            $query->query_vars['meta_value'] = $_GET['series'];
+        }
+    }
+
+    function restrict_manage_posts($query)
+    {
+        if($_GET['post_type'] == 'cf_devotional' || $_GET['post_type'] == 'cf_series_session') {
+            global $wpdb;
+
+            //Series dropdown
+            $series =  $wpdb->get_results("select * from cf_series order by title");
+
+            echo '<select name="series" id="series">';
+            echo '<option value="">Show All Series</option>';
+
+            foreach($series as $item) {
+                echo sprintf('<option %s value="%s">%s</option>',
+                              $_GET['series'] == $item->series_id ? 'selected="selected"' : '', $item->series_id, $item->title);
+            }
+
+            echo '</select>';
+
+            //Area dropdown
+            $areas = get_terms('series_area', 'orderby=name&hide_empty=0');
+
+            echo '<select name="area" id="area">';
+            echo '<option value="">Show All Areas</option>';
+
+            foreach($areas as $item) {
+                echo sprintf('<option %s value="%s">%s</option>',
+                             $_GET['area'] == $item->slug ? 'selected="selected"' : '', $item->slug, $item->name);
+            }
+
+            echo '</select>';
+        }
     }
     
     /**
