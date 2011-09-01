@@ -19,18 +19,20 @@ class Series {
             $series = array(
               'title' => str_replace("\\", "",$_POST['title']),
               'description' => str_replace("\\", "", $_POST['description']),
+              'slug' => str_replace("\\", "", $_POST['slug']),
               'start_date' => to_mysql_date($_POST['start']),
-              'end_date' => to_mysql_date($_POST['end'])
+              'end_date' => to_mysql_date($_POST['end']),
+              'main_image_url' => str_replace("\\", "", $_POST['main_image_url'])
             );
-
-            if(trim($_POST['devo_start']) === '') {
-                $series['devo_start'] = $series['start_date'];
-            }
-
-            //Check for required fields 
+            
+            //Check for required fields
             $errors = array();
             if(trim($series['title']) === '') {
                 array_push($errors, "Title is required.");
+            }
+
+            if(trim($series['slug']) === '') {
+                array_push($errors, "Slug is required.");
             }
             
             if(trim($series['start_date']) === '') {
@@ -72,6 +74,13 @@ class Series {
                     </td>
                 </tr>
                 <tr valign="top">
+                    <th scope="row"><label for="slug">Slug<span class="required">*</span></label></th>
+                    <td>
+                        <input type="text" value="<?php echo $series['slug'] ?>"
+                               maxlength="100" size="100" name="slug" />
+                    </td>
+                </tr>
+                <tr valign="top">
                     <th scope="row"><label for="description">Description</label></th>
                     <td>
                         <textarea name="description" cols="89" rows="10"><?php echo $series['description'] ?></textarea>
@@ -89,6 +98,21 @@ class Series {
                     <td>
                         <input type="text" name="end" class="date" value="<?php echo mysql2date('m/d/Y', $series['end_date']) ?>" />
                         <span class="description">The day the series should be moved to archived.</span>
+                    </td>
+                </tr>
+                <tr valign="top">
+                    <th scope="row"><label for="end">Main Image</label></th>
+                    <td>
+                        <input type="text" name="main_image_url" id="main_image_url" size="100" value="<?php echo $series['main_image_url'] ?>" />
+                        <input type="button" value="Media Library Image" class="button-secondary upload"
+                           data-control="main_image_url"/>
+                        <br />
+                        <span class="description">This appears as the featured image for the series</span>
+
+                        <br />
+                        <?php if(!empty($series['main_image_url'])) { ?>
+                        <img style="width: 500px;" src="<?php echo $series['main_image_url'] ?>"/>
+                        <?php } ?>
                     </td>
                 </tr>
                 <tr valign="top">
@@ -118,6 +142,7 @@ class Series {
         <table class="widefat data">
             <thead>
                 <tr>
+                    <th>Image</th>
                     <th>Title</th>
                     <th>Description</th>
                     <th>Start Date</th>
@@ -127,11 +152,16 @@ class Series {
             <tbody> 
                 <?php if(count($series) == 0) { ?>
                 <tr>
-                    <td colspan="4">No series found.</td>
+                    <td colspan="5">No series found.</td>
                 </tr>
                 <?php } else { ?>
                     <?php foreach($series as $item) { ?>
                         <tr>
+                            <td>
+                                <?php if(!empty($item->main_image_url)) { ?>
+                                <img style="width: 300px;" src="<?php echo $item->main_image_url ?>"/>
+                                <?php } ?>
+                            </td>
                             <td>
                                 <a href="admin.php?page=cf-wp-series/Series.php_series&id=<?php echo $item->series_id ?>">
                                     <?php echo $item->title ?>

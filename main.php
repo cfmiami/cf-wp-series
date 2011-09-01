@@ -63,6 +63,7 @@ class CFSeries {
             $sql = "CREATE TABLE `$tablename` (
                 `series_id` INT( 11 ) NOT NULL AUTO_INCREMENT,
                 `title` VARCHAR( 100 ) NOT NULL,
+                `slug` VARCHAR( 100 ) NOT NULL,
                 `description` VARCHAR( 4000 ) NULL,
                 `start_date` DATE,
                 `end_date` DATE NULL,
@@ -184,7 +185,6 @@ class CFSeries {
     function save_meta_data($post_id, $property) {
         $value = $_POST[$property];
         if($value != '') {
-
             update_post_meta($post_id, $property, strip_tags($value));
         }
     }
@@ -260,15 +260,5 @@ class CFSeries {
 
 $cfseries = new CFSeries();
 
-/**
- * Converts the given php string to a format suitable for MySQL
- * @param type $date
- * @return type 
- */
-function to_mysql_date($date) {
-    if($date == "") return;
-
-    $php_date = new DateTime($date);
-    return $php_date->format('Y-m-d');
-}
+include_once('functions.php');
 ?>
