@@ -51,6 +51,7 @@ function get_series_content($type, $series, $area, $slug) {
     }
 
     $data['base_path'] = HOMEPATH . '/watch/'. $data['series']->slug;
+    $data['devotionals_path'] = str_replace('/watch/', '/devotionals/', $data['base_path']);
     $data['area'] = $area;
 
     //Determine the content type to display. Each page type is dynamically created
@@ -104,7 +105,7 @@ function get_students_choice($data) {
 </section>
 <nav class="sub-menu watch">
     <ul class="three-segments">
-        <li><a href="#">CF Student Devotionals</a></li>
+        <li><a href="<?php echo $data['devotionals_path']; ?>/cf-students">CF Student Devotionals</a></li>
         <li><a href="<?php echo HOMEPATH; ?>/families/cf-students">CF Students Page</a></li>
         <li><a href="<?php echo HOMEPATH; ?>/contact/?ministry_area=CF Students">Contact CF Students</a></li>
     </ul>
@@ -150,17 +151,17 @@ function get_watch_session($data) {
     <ul class="three-segments">
         <?php switch($data['area']) {
             case 'cfstudents': ?>
-                <li><a href="#">CF Students Devotionals</a></li>
+                <li><a href="<?php echo $data['devotionals_path']; ?>/cf-students">CF Students Devotionals</a></li>
                 <li><a href="<?php echo HOMEPATH; ?>/families/cf-students">CF Students Page</a></li>
                 <li><a href="<?php echo HOMEPATH; ?>/contact/?ministry_area=CF Students">Contact CF Students</a></li>
             <?php break;
             case 'small-groups': ?>
-                <li><a href="#">Devotionals</a></li>
+                <li><a href="<?php echo $data['devotionals_path']; ?>/small-groups">Devotionals</a></li>
                 <li><a href="<?php echo HOMEPATH; ?>/small-groups">Small Groups Page</a></li>
                 <li><a href="<?php echo HOMEPATH; ?>/contact/?ministry_area=Small Groups">Contact Small Groups</a></li>
             <?php break;
             case 'cfkids': ?>
-                <li><a href="#">CF Kids Devotionals</a></li>
+                <li><a href="<?php echo $data['devotionals_path']; ?>/cfkids">CF Kids Devotionals</a></li>
                 <li><a href="<?php echo HOMEPATH; ?>/families/cf-kids">CF Kids Page</a></li>
                 <li><a href="<?php echo HOMEPATH; ?>/contact/?ministry_area=CF Kids">Contact CF Kids</a></li>
             <?php break;
@@ -212,8 +213,8 @@ function get_watch_main($data) {
 </section>
 <nav class="sub-menu watch">
     <ul class="three-segments">
-        <li><a href="#">Subscribe To Our Podcast</a></li>
-        <li><a href="#">Devotionals</a></li>
+        <li><a target="_blank" href="http://itunes.apple.com/us/podcast/christ-fellowship-miami/id399037659">Subscribe To Our Podcast</a></li>
+        <li><a href="<?php echo $data['devotionals_path']; ?>">Devotionals</a></li>
         <li><a href="#">Previous Series</a></li>
     </ul>
 </nav>
@@ -347,12 +348,12 @@ function get_devotional_meta($id) {
     }
 
     //Get devotionals
-    $meta['devotionals'] = get_post_by_type('cf_devotional', $meta['series_id'], $session_areas);
+    $meta['devotionals'] = get_post_by_type('cf_devotional', $meta['series_id'], $session_areas[0]);
 
     //Get series information
     global $wpdb;
-    $series = $wpdb->get_results("select * from cf_series where series_id = " . $meta['series_id'], ARRAY_A);
-    $meta['series'] = $series[0]['title'];
+    $meta['series'] = $wpdb->get_row(
+                $wpdb->prepare("select * from cf_series where series_id = %s", $meta['series_id']));
 
     return $meta;
 }
