@@ -35,11 +35,16 @@ function get_series_content($type, $series, $area, $slug) {
         $wpdb->get_row($wpdb->prepare("select * from cf_series where slug = %s", $series));
 
     //If no area given, default to the "Watch The Sermons" area
-    if(empty($area)) $area = 'sermons';
+    if(empty($area)) {
+        switch($type) {
+            case "cf_series_session": $area = 'sermons'; break;
+            case "cf_devotional": $area = 'small-groups'; break;
+        }
+    }
 
     //If no post slug is given, default to the first on of the series/area
     if(empty($slug)) {
-        $session = get_post_by_type('cf_series_session',  $data['series']->series_id, $area, 1);
+        $session = get_post_by_type($type,  $data['series']->series_id, $area, 1);
         $data['post'] = $session[0];
     } else {
         //Otherwise, get the given slug
@@ -47,7 +52,11 @@ function get_series_content($type, $series, $area, $slug) {
     }
 
     if($data['post']) {
-        $data['meta'] = get_series_session_meta($data['post']->ID);
+        switch($type) {
+            case "cf_series_session": $data['meta'] = get_series_session_meta($data['post']->ID); break;
+            case "cf_devotional": $data['meta'] = get_devotional_meta($data['post']->ID); break;
+        }
+
     }
 
     $data['base_path'] = HOMEPATH . '/watch/'. $data['series']->slug;
@@ -68,9 +77,29 @@ function get_series_content($type, $series, $area, $slug) {
             break;
 
         case "cf_devotional":
-
+            get_devotional_template($data);
             break;
     }
+}
+
+/**
+ * Displays the devotional
+ * @param $data Contains data needed to render the template
+ */
+function get_devotional_template($data) {
+    display_series_masthead($data);
+?>
+<article>
+    <h1><?php echo $data['post']->post_title; ?></h1>
+    <p>Today's Reading Passage: <?php echo $data['meta']['verse']; ?></p>
+
+    <p><?php echo str_replace("\n", "</p><p>", $data['post']->post_content); ?></p>
+
+    <?php if($data['area'] == "small-groups") { ?>
+    <p><a target="_blank" href="http://eepurl.com/dBAcr">Receive Devotionals In Your Inbox</a></p>
+    <?php } ?>
+</article>
+<?php 
 }
 
 /**
@@ -228,7 +257,12 @@ function get_watch_main($data) {
 function display_series_masthead($data) {
     $meta = $data["meta"];
     $i = 1;
+    switch($data['post']->post_type) {
+        case "cf_series_session": $base_path = $data['base_path']; break;
+        case "cf_devotional": $base_path = $data['devotionals_path']; break;
+    }
 ?>
+<?php if($data['post']->post_type == 'cf_series_session') { ?>
 <h2 class="featured">
     <img width="940" height="290" src="<?php echo $data['series']->main_image_url; ?>" class="attachment-post-thumbnail wp-post-image" alt="" title="" />
 
@@ -238,10 +272,12 @@ function display_series_masthead($data) {
         </a>
     <?php } ?>
 </h2>
+<?php } ?>
+        
 <div class="sessions">
-<?php if(isset($meta['sessions'])) : ?>
-    <?php foreach($meta['sessions'] as $session) : ?>
-        <a <?php echo $meta['post_id'] == $session->id ? 'class="current"' : '' ?> href="<?php echo $data['base_path'] ?>/<?php echo $data['area'] ?>/<?php echo $session->post_name ?>"><?php echo $i++; ?></a>
+<?php if(isset($meta['posts'])) : ?>
+    <?php foreach($meta['posts'] as $session) : ?>
+        <a <?php echo $meta['post_id'] == $session->id ? 'class="current"' : '' ?> href="<?php echo $base_path ?>/<?php echo $data['area'] ?>/<?php echo $session->post_name ?>"><?php echo $i++; ?></a>
     <?php endforeach; ?>
 <?php endif; ?>
 </div>
@@ -317,7 +353,7 @@ function get_series_session_meta($id) {
     }
 
     //Get series sessions
-    $meta['sessions'] = get_post_by_type('cf_series_session', $meta['series_id'], $session_areas[0]);
+    $meta['posts'] = get_post_by_type('cf_series_session', $meta['series_id'], $session_areas[0]);
 
     //Get series information
     global $wpdb;
@@ -348,7 +384,7 @@ function get_devotional_meta($id) {
     }
 
     //Get devotionals
-    $meta['devotionals'] = get_post_by_type('cf_devotional', $meta['series_id'], $session_areas[0]);
+    $meta['posts'] = get_post_by_type('cf_devotional', $meta['series_id'], $session_areas[0]);
 
     //Get series information
     global $wpdb;
@@ -388,7 +424,10 @@ function add_rewrite_rules($aRules) {
     $aNewRules = array(
         'watch/([^/]+)/?$' => 'index.php?pagename=watch&series=$matches[1]',
         'watch/([^/]+)/([^/]+)/?$' => 'index.php?pagename=watch&series=$matches[1]&area=$matches[2]',
-        'watch/([^/]+)/([^/]+)/([^/]+)/?$' => 'index.php?pagename=watch&series=$matches[1]&area=$matches[2]&post=$matches[3]');
+        'watch/([^/]+)/([^/]+)/([^/]+)/?$' => 'index.php?pagename=watch&series=$matches[1]&area=$matches[2]&post=$matches[3]',
+        'devotionals/([^/]+)/?$' => 'index.php?pagename=devotionals&series=$matches[1]',
+        'devotionals/([^/]+)/([^/]+)/?$' => 'index.php?pagename=devotionals&series=$matches[1]&area=$matches[2]',
+        'devotionals/([^/]+)/([^/]+)/([^/]+)/?$' => 'index.php?pagename=devotionals&series=$matches[1]&area=$matches[2]&post=$matches[3]');
     $aRules = $aNewRules + $aRules;
     return $aRules;
 }
