@@ -105,8 +105,8 @@ function get_students_choice($data) {
 <nav class="sub-menu watch">
     <ul class="three-segments">
         <li><a href="#">CF Student Devotionals</a></li>
-        <li><a href="#">CF Students Page</a></li>
-        <li><a href="#">Contact CF Students</a></li>
+        <li><a href="<?php echo HOMEPATH; ?>/families/cf-students">CF Students Page</a></li>
+        <li><a href="<?php echo HOMEPATH; ?>/contact/?ministry_area=CF Students">Contact CF Students</a></li>
     </ul>
 </nav>
 <?php
@@ -151,18 +151,18 @@ function get_watch_session($data) {
         <?php switch($data['area']) {
             case 'cfstudents': ?>
                 <li><a href="#">CF Students Devotionals</a></li>
-                <li><a href="#">CF Students Page</a></li>
-                <li><a href="#">Contact CF Students</a></li>
+                <li><a href="<?php echo HOMEPATH; ?>/families/cf-students">CF Students Page</a></li>
+                <li><a href="<?php echo HOMEPATH; ?>/contact/?ministry_area=CF Students">Contact CF Students</a></li>
             <?php break;
             case 'small-groups': ?>
                 <li><a href="#">Devotionals</a></li>
-                <li><a href="#">Small Groups Page</a></li>
-                <li><a href="#">Contact Small Groups</a></li>
+                <li><a href="<?php echo HOMEPATH; ?>/small-groups">Small Groups Page</a></li>
+                <li><a href="<?php echo HOMEPATH; ?>/contact/?ministry_area=Small Groups">Contact Small Groups</a></li>
             <?php break;
             case 'cfkids': ?>
                 <li><a href="#">CF Kids Devotionals</a></li>
-                <li><a href="#">CF Kids Page</a></li>
-                <li><a href="#">Contact CF Kids</a></li>
+                <li><a href="<?php echo HOMEPATH; ?>/families/cf-kids">CF Kids Page</a></li>
+                <li><a href="<?php echo HOMEPATH; ?>/contact/?ministry_area=CF Kids">Contact CF Kids</a></li>
             <?php break;
         } ?>
     </ul>
