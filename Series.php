@@ -22,7 +22,8 @@ class Series {
               'slug' => str_replace("\\", "", $_POST['slug']),
               'start_date' => to_mysql_date($_POST['start']),
               'end_date' => to_mysql_date($_POST['end']),
-              'main_image_url' => str_replace("\\", "", $_POST['main_image_url'])
+              'main_image_url' => str_replace("\\", "", $_POST['main_image_url']),
+              'kids_image_url' => str_replace("\\", "", $_POST['kids_image_url'])
             );
             
             //Check for required fields
@@ -116,6 +117,21 @@ class Series {
                     </td>
                 </tr>
                 <tr valign="top">
+                    <th scope="row"><label for="end">Kids Main Image</label></th>
+                    <td>
+                        <input type="text" name="kids_image_url" id="kids_image_url" size="100" value="<?php echo $series['kids_image_url'] ?>" />
+                        <input type="button" value="Media Library Image" class="button-secondary upload"
+                           data-control="kids_image_url"/>
+                        <br />
+                        <span class="description">This appears as the featured image for the kids series. If no image is given, the image for the main series is used.</span>
+
+                        <br />
+                        <?php if(!empty($series['kids_image_url'])) { ?>
+                        <img style="width: 500px;" src="<?php echo $series['kids_image_url'] ?>"/>
+                        <?php } ?>
+                    </td>
+                </tr>
+                <tr valign="top">
                     <td>
                         <input type="submit" name="save" value="Save Series" class="button-primary" />
                         <a class="button-secondary" href="admin.php?page=cf-wp-series/Series.php">Back to List</a>
@@ -176,6 +192,7 @@ class Series {
             </tbody>
             <tfoot>
                 <tr>
+					<th>Image</th>
                     <th>Title</th>
                     <th>Description</th>
                     <th>Start Date</th>

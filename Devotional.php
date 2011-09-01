@@ -68,8 +68,8 @@ class Devotional {
         </select>
         
         <h4>Today's Reading Passage</h4>
-        <p>Select the verses that go with this devotional. Separate the verses with commas.</p>
-        <input type="text" name="_cf_daily_verses" style="width: 100%;" value="<?php echo $verses ?>" />
+        <p>Select the verses that go with this devotional.</p>
+        <textarea name="_cf_daily_verses" style="width: 100%;" rows="10"><?php echo $verses ?></textarea>
         
         <h4>Footer</h4>
         <p>This text will appear in its own section below the main content of the devotional.</p>

@@ -6,13 +6,13 @@
 function cf_series_scripts() {
     $svr_uri = $_SERVER['REQUEST_URI'];
 
-    if ( strstr($svr_uri, 'watch')) {
+    //if ( strstr($svr_uri, 'watch')) {
         echo '<style>.ui-tabs-hide { display: none; }</style>';
         
         wp_enqueue_style('prettyphoto-css', JAVASCRIPTSPATH .'libs/prettyphoto/css/prettyPhoto.css', false, '1.0.0', 'screen' );
         wp_enqueue_script('prettyphoto-js', JAVASCRIPTSPATH .'libs/prettyphoto/js/jquery.prettyPhoto.js', array('jquery'));
         wp_enqueue_script('jquery-ui-tabs');
-    }
+   // }
 }
 add_action('wp_print_styles', 'cf_series_scripts');
 
@@ -27,12 +27,10 @@ function get_series_content($type, $series, $area, $slug) {
     global $wpdb;
     $data = array();
 
-    wp_enqueue_script( 'jquery-ui-tabs' );
-    
     //If there is no series given, default to the current series
     $data['series'] = empty($series) ?
         $wpdb->get_row("select * from cf_series where CURRENT_DATE between start_date and end_date limit 1") :
-        $wpdb->get_row($wpdb->prepare("select * from cf_series where slug = %s", $series));
+        $wpdb->get_row($wpdb->prepare("select * from cf_series where slug = '%s' limit 1", $series));
 
     //If no area given, default to the "Watch The Sermons" area
     if(empty($area)) {
@@ -89,11 +87,22 @@ function get_series_content($type, $series, $area, $slug) {
 function get_devotional_template($data) {
     display_series_masthead($data);
 ?>
+
+<?php if($data['area'] == "small-groups") { ?>
+    <a href="<?php echo $data['devotionals_path']; ?>/grupos-pequenos">Ver los deviocionales en Espanol</a>
+<?php } else if($data['area'] == "grupos-pequenos") { ?>
+    <a href="<?php echo $data['devotionals_path']; ?>/small-groups">See devotionals in English</a>
+<?php } ?>
+
 <article>
     <h1><?php echo $data['post']->post_title; ?></h1>
+    <?php if(!empty($data['meta']['verse'])) { ?>
     <p>Today's Reading Passage: <?php echo $data['meta']['verse']; ?></p>
+    <?php } ?>
 
     <p><?php echo str_replace("\n", "</p><p>", $data['post']->post_content); ?></p>
+
+    <p>Footer: <?php echo $data['meta']['footer']; ?></p>
 
     <?php if($data['area'] == "small-groups") { ?>
     <p><a target="_blank" href="http://eepurl.com/dBAcr">Receive Devotionals In Your Inbox</a></p>
@@ -134,7 +143,7 @@ function get_students_choice($data) {
 </section>
 <nav class="sub-menu watch">
     <ul class="three-segments">
-        <li><a href="<?php echo $data['devotionals_path']; ?>/cf-students">CF Student Devotionals</a></li>
+        <li><a href="<?php echo $data['devotionals_path']; ?>/cfstudents">CF Student Devotionals</a></li>
         <li><a href="<?php echo HOMEPATH; ?>/families/cf-students">CF Students Page</a></li>
         <li><a href="<?php echo HOMEPATH; ?>/contact/?ministry_area=CF Students">Contact CF Students</a></li>
     </ul>
@@ -152,8 +161,10 @@ function get_watch_session($data) {
 <div id="tabs">
     <aside class="sidebar">
         <ul>
+			<?php if(!empty($data['post']->post_content)) { ?>
             <li><a href="#information" title="Information">Information</a></li>
-
+			<?php } ?>
+			
             <?php if(!empty($data['meta']['small_group'])) { ?>
                 <li><a href="#small_group" title="Small Group Questions">Small Group Questions</a></li>
             <?php } ?>
@@ -164,8 +175,10 @@ function get_watch_session($data) {
         </ul>
     </aside>
     <article>
+		<?php if(!empty($data['post']->post_content)) { ?>
         <div id="information"><p><?php echo str_replace("\n", "</p><p>",$data['post']->post_content); ?></p></div>
-
+		<?php } ?>
+		
         <?php if(!empty($data['meta']['small_group'])) { ?>
             <div id="small_group"><p><?php echo str_replace("\n", "</p><p>", $data['meta']['small_group']); ?></p></div>
         <?php } ?>
@@ -180,7 +193,7 @@ function get_watch_session($data) {
     <ul class="three-segments">
         <?php switch($data['area']) {
             case 'cfstudents': ?>
-                <li><a href="<?php echo $data['devotionals_path']; ?>/cf-students">CF Students Devotionals</a></li>
+                <li><a href="<?php echo $data['devotionals_path']; ?>/cfstudents">CF Students Devotionals</a></li>
                 <li><a href="<?php echo HOMEPATH; ?>/families/cf-students">CF Students Page</a></li>
                 <li><a href="<?php echo HOMEPATH; ?>/contact/?ministry_area=CF Students">Contact CF Students</a></li>
             <?php break;
@@ -261,10 +274,19 @@ function display_series_masthead($data) {
         case "cf_series_session": $base_path = $data['base_path']; break;
         case "cf_devotional": $base_path = $data['devotionals_path']; break;
     }
+
+    //Get the series image to display
+    if($data['area'] == 'cfkids') {
+        $main_image_url = $data['series']->kids_image_url ;
+    }
+
+    if(empty($main_image_url)) {
+        $main_image_url = $data['series']->main_image_url;
+    }
 ?>
-<?php if($data['post']->post_type == 'cf_series_session') { ?>
+<?php if($data['post']->post_type <> 'cf_devotional') { ?>
 <h2 class="featured">
-    <img width="940" height="290" src="<?php echo $data['series']->main_image_url; ?>" class="attachment-post-thumbnail wp-post-image" alt="" title="" />
+    <img width="940" height="290" src="<?php echo $main_image_url; ?>" class="attachment-post-thumbnail wp-post-image" alt="" title="" />
 
     <?php if(!empty($meta['video'])) { ?>
         <a class="play" href="<?php echo $meta['video']; ?>" rel="prettyPhoto" title="<?php echo $data['post']->post_title; ?>">
@@ -316,10 +338,10 @@ select p.* from wp_term_relationships tr
     inner join wp_term_taxonomy tt on tt.term_taxonomy_id = tr.term_taxonomy_id
     inner join wp_terms t on t.term_id = tt.term_id
     inner join wp_posts p on p.id = tr.object_id
-    inner join wp_postmeta pm on pm.post_id = p.id and pm.meta_key = '_cf_series' and pm.meta_value = %s
-where tt.taxonomy = 'series_area' and t.slug = %s
+    inner join wp_postmeta pm on pm.post_id = p.id and pm.meta_key = '_cf_series' and pm.meta_value = '%s'
+where tt.taxonomy = 'series_area' and t.slug = '%s'
     and p.post_status = 'publish'
-    and p.post_type = %s
+    and p.post_type = '%s'
 order by p.post_date
 ";
 

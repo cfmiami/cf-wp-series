@@ -68,6 +68,7 @@ class CFSeries {
                 `start_date` DATE,
                 `end_date` DATE NULL,
                 `main_image_url` VARCHAR( 200 ) NULL,
+                `kids_image_url` VARCHAR( 200 ) NULL,
                 `style_url` VARCHAR( 200 ) NULL,
                 PRIMARY KEY (`series_id`)
                 );";
@@ -182,10 +183,9 @@ class CFSeries {
      * @param type $post_id
      * @param type $property 
      */
-    function save_meta_data($post_id, $property) {
-        $value = $_POST[$property];
+    function save_meta_data($post_id, $property, $value) {
         if($value != '') {
-            update_post_meta($post_id, $property, strip_tags($value));
+            update_post_meta($post_id, $property, $value);
         }
     }
     
@@ -199,16 +199,16 @@ class CFSeries {
         switch($_POST['post_type']) 
         {
             case 'cf_devotional':
-                $this->save_meta_data($post_id, '_cf_series');
-                $this->save_meta_data($post_id, '_cf_daily_verses');
-                $this->save_meta_data($post_id, '_cf_footer');
+                $this->save_meta_data($post_id, '_cf_series', $_POST['_cf_series']);
+                $this->save_meta_data($post_id, '_cf_daily_verses', $_POST['_cf_daily_verses']);
+                $this->save_meta_data($post_id, '_cf_footer', wpautop($_POST['_cf_footer']));
                 break;
             
             case 'cf_series_session':
-                $this->save_meta_data($post_id, '_cf_series');
-                $this->save_meta_data($post_id, '_cf_video_url');
-                $this->save_meta_data($post_id, '_cf_group_questions');
-                $this->save_meta_data($post_id, '_cf_family_questions');
+                $this->save_meta_data($post_id, '_cf_series', $_POST['_cf_series']);
+                $this->save_meta_data($post_id, '_cf_video_url', $_POST['_cf_video_url']);
+                $this->save_meta_data($post_id, '_cf_group_questions', wpautop($_POST['_cf_group_questions']));
+                $this->save_meta_data($post_id, '_cf_family_questions', wpautop($_POST['_cf_family_questions']));
                 break;
         }
     }
