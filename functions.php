@@ -72,6 +72,10 @@ function get_series_content($type, $series, $area, $slug) {
     }
 }
 
+/**
+ * Allows a user to choose between high school and middle school series sessions
+ * @param $data Contains data needed to render the template
+ */
 function get_students_choice($data) {
     display_series_masthead($data);
 ?>
@@ -199,7 +203,7 @@ function display_series_masthead($data) {
     <img width="940" height="290" src="<?php echo $data['series']->main_image_url; ?>" class="attachment-post-thumbnail wp-post-image" alt="" title="" />
 
     <?php if(!empty($meta['video'])) { ?>
-        <a class='play' href='<?php echo $meta['video']; ?>' rel='prettyPhoto' title='<?php echo $data['post']->post_title; ?>'>
+        <a class="play" href="<?php echo $meta['video']; ?>" rel="prettyPhoto" title="<?php echo $data['post']->post_title; ?>">
             <span class="play-video"><span><?php echo $data['post']->post_title; ?></span></span>
         </a>
     <?php } ?>
