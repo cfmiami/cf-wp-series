@@ -171,6 +171,10 @@ function get_watch_session($data) {
             <?php if(!empty($data['meta']['family_discussion'])) { ?>
                 <li><a href="#family_discussion" title="Family Discussions">Family Discussions</a></li>
             <?php } ?>
+
+            <?php if(!empty($data['series']->book_description)) { ?>
+                <li><a href="#recommend" title="Recommended Book">Recommended Book</a></li>
+            <?php } ?>
         </ul>
     </aside>
     <article>
@@ -184,6 +188,16 @@ function get_watch_session($data) {
 
         <?php if(!empty($data['meta']['family_discussion'])) { ?>
             <div id="family_discussion"><p><?php echo str_replace("\n", "</p><p>", $data['meta']['family_discussion']); ?></p></div>
+        <?php } ?>
+
+        <?php if(!empty($data['series']->book_description)) { ?>
+            <div id="recommend">
+                <p><?php echo str_replace("\n", "</p><p>", $data['series']->book_description); ?></p>
+                
+                <?php if(!empty($data['series']->book_image_url)) { ?>
+                    <img src="<?php echo $data['series']->book_image_url ?>"/>
+                <?php } ?>
+            </div>
         <?php } ?>
     </article>
 </div>

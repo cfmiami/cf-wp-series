@@ -5,7 +5,31 @@ class Series {
                 __FILE__, array($this, 'settings'), '', 25);
 
         $hook = add_submenu_page(__FILE__, 'Series', 'Add New Series', 'administrator',
-                __FILE__ . '_series', array($this,'edit_series'));  
+                __FILE__ . '_series', array($this,'edit_series'));
+
+        if (function_exists('wp_tiny_mce')) {
+
+          add_filter('teeny_mce_before_init', create_function('$a', '
+            $a["theme"] = "advanced";
+            $a["skin"] = "wp_theme";
+            $a["height"] = "200";
+            $a["width"] = "800";
+            $a["onpageload"] = "";
+            $a["mode"] = "exact";
+            $a["elements"] = "intro";
+            $a["editor_selector"] = "customEditor";
+            $a["plugins"] = "safari,inlinepopups,spellchecker";
+
+            $a["forced_root_block"] = false;
+            $a["force_br_newlines"] = true;
+            $a["force_p_newlines"] = false;
+            $a["convert_newlines_to_brs"] = true;
+
+            return $a;'));
+
+         wp_tiny_mce(true);
+        }
+
     }
     
     /**
@@ -23,7 +47,9 @@ class Series {
               'start_date' => to_mysql_date($_POST['start']),
               'end_date' => to_mysql_date($_POST['end']),
               'main_image_url' => str_replace("\\", "", $_POST['main_image_url']),
-              'kids_image_url' => str_replace("\\", "", $_POST['kids_image_url'])
+              'kids_image_url' => str_replace("\\", "", $_POST['kids_image_url']),
+              'book_description' => str_replace("\\", "",$_POST['book_description']),
+              'book_image_url' => str_replace("\\", "", $_POST['book_image_url'])
             );
             
             //Check for required fields
@@ -131,14 +157,38 @@ class Series {
                         <?php } ?>
                     </td>
                 </tr>
-                <tr valign="top">
+            </table>
+
+            <h2>Recommended Book</h2>
+             <table class="form-table" style="width: auto;">
+                 <tr valign="top">
+                    <th scope="row"><label for="book_description">Description</label></th>
                     <td>
-                        <input type="submit" name="save" value="Save Series" class="button-primary" />
-                        <a class="button-secondary" href="admin.php?page=cf-wp-series/Series.php">Back to List</a>
+                        <div class="customEditor">
+                        <textarea id="book_description" name="book_description" rows="10"><?php echo $series['book_description'] ?></textarea>
+                            </div>
+                    </td>
+                 </tr>
+                <tr valign="top">
+                    <th scope="row"><label for="book_image_url">Book Image</label></th>
+                    <td>
+                        <input type="text" id="book_image_url" value="<?php echo $series['book_image_url'] ?>"
+                               maxlength="100" size="100" name="book_image_url" />
+                        <input type="button" value="Media Library Image" class="button-secondary upload"
+                           data-control="book_image_url"/>
+
+                        <br />
+                        <?php if(!empty($series['book_image_url'])) { ?>
+                        <img src="<?php echo $series['book_image_url'] ?>"/>
+                        <?php } ?>
                     </td>
                 </tr>
-            </table>
+
+             </table>
+
             <input type="hidden" name="series_id" value="<?php echo $_GET['id'] ?>" />
+            <input type="submit" name="save" value="Save Series" class="button-primary" />
+            <a class="button-secondary" href="admin.php?page=cf-wp-series/Series.php">Back to List</a>
         </form>
     </div>
     <?php

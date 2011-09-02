@@ -70,6 +70,8 @@ class CFSeries {
                 `main_image_url` VARCHAR( 200 ) NULL,
                 `kids_image_url` VARCHAR( 200 ) NULL,
                 `style_url` VARCHAR( 200 ) NULL,
+                `book_description` VARCHAR( 3000 ) NULL,
+                `book_image_url` VARCHAR( 200 ) NULL
                 PRIMARY KEY (`series_id`)
                 );";
             
