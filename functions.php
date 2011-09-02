@@ -342,7 +342,7 @@ select p.* from wp_term_relationships tr
     inner join wp_posts p on p.id = tr.object_id
     inner join wp_postmeta pm on pm.post_id = p.id and pm.meta_key = '_cf_series' and pm.meta_value = '%s'
 where tt.taxonomy = 'series_area' and t.slug = '%s'
-    and p.post_status = 'publish'
+    /* and p.post_status = 'publish' */
     and p.post_type = '%s'
 order by p.post_date
 ";
