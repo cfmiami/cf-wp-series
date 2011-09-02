@@ -26,6 +26,11 @@ function get_series_content($type, $series, $area, $slug) {
     global $wpdb;
     $data = array();
 
+    if($series == 'series') {
+        display_series_choose();
+        return;
+    }
+
     //If there is no series given, default to the current series
     $data['series'] = empty($series) ?
         $wpdb->get_row("select * from cf_series where CURRENT_DATE between start_date and end_date limit 1") :
@@ -77,6 +82,33 @@ function get_series_content($type, $series, $area, $slug) {
             get_devotional_template($data);
             break;
     }
+}
+
+/**
+ * Displays a screen which allows the user to choose between all past and current series
+ */
+function display_series_choose() {
+    global $wpdb;
+    $series = $wpdb->get_results("select * from cf_series where start_date <= CURRENT_DATE ORDER BY start_date");
+    $i = 0;
+?>
+    <section class="options">
+        <nav>
+            <ul class="series three-segments">
+            <?php foreach($series as $item) { ?>
+                <li>
+                    <a href="<?php echo HOMEPATH; ?>/watch/<?php echo $item->slug; ?>">
+                        <?php echo $item->title ?>
+                    </a>
+                </li>
+                <?php if($i++ % 3 == 2) { ?>
+                </ul><ul class="series three-segments">
+                <?php } ?>
+            <?php } ?>
+            </ul>
+        </nav>
+    </section>
+<?php
 }
 
 /**
@@ -270,7 +302,7 @@ function get_watch_main($data) {
     <ul class="three-segments">
         <li><a target="_blank" href="http://itunes.apple.com/us/podcast/christ-fellowship-miami/id399037659">Subscribe To Our Podcast</a></li>
         <li><a href="<?php echo $data['devotionals_path']; ?>">Devotionals</a></li>
-        <li><a href="#">Previous Series</a></li>
+        <li><a href="<?php echo HOMEPATH; ?>/watch/series">Previous Series</a></li>
     </ul>
 </nav>
 <?php
