@@ -298,8 +298,8 @@ function display_series_masthead($data) {
 <?php if(isset($meta['posts'])) : ?>
     <?php foreach($meta['posts'] as $session) : ?>
         <div>
-            <a <?php echo $meta['post_id'] == $session->id ? 'class="current"' : '' ?> href="<?php echo $base_path ?>/<?php echo $data['area'] ?>/<?php echo $session->post_name ?>">Week 1<?php echo $i++; ?>
-                <span class="session-date">09/09/11</span>
+            <a <?php echo $meta['post_id'] == $session->id ? 'class="current"' : '' ?> href="<?php echo $base_path ?>/<?php echo $data['area'] ?>/<?php echo $session->post_name ?>">Week <?php echo $i++; ?>
+                <span class="session-date"><?php echo date('m/d/Y', strtotime($session->post_date)); ?></span>
             </a>
         </div>
     <?php endforeach; ?>
