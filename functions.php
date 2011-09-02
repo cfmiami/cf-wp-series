@@ -292,10 +292,9 @@ function display_series_masthead($data) {
         </a>
     <?php } ?>
 </h2>
-<?php } ?>
-        
 <div class="sessions">
 <?php if(isset($meta['posts'])) : ?>
+
     <?php foreach($meta['posts'] as $session) : ?>
         <div>
             <a <?php echo $meta['post_id'] == $session->id ? 'class="current"' : '' ?> href="<?php echo $base_path ?>/<?php echo $data['area'] ?>/<?php echo $session->post_name ?>">Week <?php echo $i++; ?>
@@ -305,6 +304,15 @@ function display_series_masthead($data) {
     <?php endforeach; ?>
 <?php endif; ?>
 </div>
+<?php } else { ?>
+    <?php if(isset($meta['posts'])) : ?>
+        <?php foreach($meta['posts'] as $session) : ?>
+            <a <?php echo $meta['post_id'] == $session->id ? 'class="current"' : '' ?> href="<?php echo $base_path ?>/<?php echo $data['area'] ?>/<?php echo $session->post_name ?>">
+                <?php echo $i++; ?>
+            </a>
+        <?php endforeach; ?>
+    <?php endif; ?>
+ <?php } ?>
 <?php
 }
 
