@@ -125,8 +125,9 @@ class CFSeries {
 
         //Initialize the devotional post type. This will create a new post type
         //for devotionals as well as create the meta data required.
-        new Devotional();
         new SeriesSession();
+        new Devotional();
+
 
         add_filter('manage_posts_columns', array($this, 'add_columns'), 10, 2);
         add_filter('parse_query', array($this, 'parse_query'));

@@ -284,25 +284,25 @@ function display_series_masthead($data) {
     }
 ?>
 <?php if($data['post']->post_type <> 'cf_devotional') { ?>
-<h2 class="featured" style="background-image: url('<?php echo $main_image_url; ?>')">
+    <h2 class="featured" style="background-image: url('<?php echo $main_image_url; ?>')">
 
-    <?php if(!empty($meta['video'])) { ?>
-        <a class="play" href="<?php echo $meta['video']; ?>" rel="prettyPhoto" title="<?php echo $data['post']->post_title; ?>">
-            <span class="play-video"><span><?php echo $data['post']->post_title; ?></span></span>
-        </a>
-    <?php } ?>
-</h2>
-<div class="sessions">
-<?php if(isset($meta['posts'])) : ?>
-
-    <?php foreach($meta['posts'] as $session) : ?>
-        <div>
-            <a <?php echo $meta['post_id'] == $session->id ? 'class="current"' : '' ?> href="<?php echo $base_path ?>/<?php echo $data['area'] ?>/<?php echo $session->post_name ?>">Week <?php echo $i++; ?>
-                <span class="session-date"><?php echo date('m/d/Y', strtotime($session->post_date)); ?></span>
+        <?php if(!empty($meta['video'])) { ?>
+            <a class="play" href="<?php echo $meta['video']; ?>" rel="prettyPhoto" title="<?php echo $data['post']->post_title; ?>">
+                <span class="play-video"><span><?php echo $data['post']->post_title; ?></span></span>
             </a>
-        </div>
-    <?php endforeach; ?>
-<?php endif; ?>
+        <?php } ?>
+    </h2>
+    <div class="sessions">
+    <?php if(isset($meta['posts'])) : ?>
+
+        <?php foreach($meta['posts'] as $session) : ?>
+            <div>
+                <a <?php echo $meta['post_id'] == $session->id ? 'class="current"' : '' ?> href="<?php echo $base_path ?>/<?php echo $data['area'] ?>/<?php echo $session->post_name ?>">Week <?php echo $i++; ?>
+                    <span class="session-date"><?php echo date('m/d/Y', strtotime($session->post_date)); ?></span>
+                </a>
+            </div>
+        <?php endforeach; ?>
+    <?php endif; ?>
 </div>
 <?php } else { ?>
     <?php if(isset($meta['posts'])) : ?>

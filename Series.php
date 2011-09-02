@@ -2,8 +2,8 @@
 class Series {
     public function __construct() {
         add_menu_page('CF Series Settings', 'CF Series', 'administrator',
-                __FILE__, array($this, 'settings'));
-        
+                __FILE__, array($this, 'settings'), '', 25);
+
         $hook = add_submenu_page(__FILE__, 'Series', 'Add New Series', 'administrator',
                 __FILE__ . '_series', array($this,'edit_series'));  
     }
