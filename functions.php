@@ -212,21 +212,21 @@ function get_watch_session($data) {
         </aside>
         <article>
     		<?php if(!empty($data['post']->post_content)) { ?>
-            <div id="information"><h3 class="series-title"><?php echo $data['post']->post_title; ?></h3><p><?php echo str_replace("\n", "</p><p>",$data['post']->post_content); ?></p></div>
+            <div id="information"><h3 class="series-title"><?php echo $data['post']->post_title; ?></h3><p><?php echo do_shortcode(str_replace("\n", "</p><p>",$data['post']->post_content)); ?></p></div>
     		<?php } ?>
     		
             <?php if(!empty($data['meta']['small_group'])) { ?>
-                <div id="small_group"><h3 class="series-title">Small Group Questions</h3><p><?php echo str_replace("\n", "</p><p>", $data['meta']['small_group']); ?></p></div>
+                <div id="small_group"><h3 class="series-title">Small Group Questions</h3><p><?php echo do_shortcode(str_replace("\n", "</p><p>", $data['meta']['small_group'])); ?></p></div>
             <?php } ?>
 
             <?php if(!empty($data['meta']['family_discussion'])) { ?>
-                <div id="family_discussion"><h3 class="series-title">Family Discussions</h3><p><?php echo str_replace("\n", "</p><p>", $data['meta']['family_discussion']); ?></p></div>
+                <div id="family_discussion"><h3 class="series-title">Family Discussions</h3><p><?php echo do_shortcode(str_replace("\n", "</p><p>", $data['meta']['family_discussion'])); ?></p></div>
             <?php } ?>
 
             <?php if(!empty($data['series']->book_description) && $data['area'] == 'small-groups') { ?>
                 <div id="recommend">
                     <h3 class="series-title">Recommended Book</h3>
-                    <p><?php echo str_replace("\n", "</p><p>", $data['series']->book_description); ?></p>
+                    <p><?php echo do_shortcode(str_replace("\n", "</p><p>", $data['series']->book_description)); ?></p>
                     
                     <?php if(!empty($data['series']->book_image_url)) { ?>
                         <img src="<?php echo $data['series']->book_image_url ?>"/>
