@@ -172,7 +172,7 @@ function get_watch_session($data) {
                 <li><a href="#family_discussion" title="Family Discussions">Family Discussions</a></li>
             <?php } ?>
 
-            <?php if(!empty($data['series']->book_description)) { ?>
+            <?php if(!empty($data['series']->book_description) && $data['area'] == 'small-groups') { ?>
                 <li><a href="#recommend" title="Recommended Book">Recommended Book</a></li>
             <?php } ?>
         </ul>
@@ -190,7 +190,7 @@ function get_watch_session($data) {
             <div id="family_discussion"><p><?php echo str_replace("\n", "</p><p>", $data['meta']['family_discussion']); ?></p></div>
         <?php } ?>
 
-        <?php if(!empty($data['series']->book_description)) { ?>
+        <?php if(!empty($data['series']->book_description) && $data['area'] == 'small-groups') { ?>
             <div id="recommend">
                 <p><?php echo str_replace("\n", "</p><p>", $data['series']->book_description); ?></p>
                 
