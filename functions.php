@@ -127,14 +127,14 @@ function get_students_choice($data) {
             <li>
                 <a href="<?php echo $data['base_path'] ?>/cfstudents">
                     High School
-                    <span>Desc Here</span>
+                    <span>Videos, Questions, Devotions &amp; Verses</span>
                 </a>
             </li>
             <li>
 
                 <a href="<?php echo $data['base_path'] ?>/cfmiddle">
                     Middle School
-                    <span>Desc Here</span>
+                    <span>Videos, Questions, Devotions &amp; Verses</span>
                 </a>
             </li>
         </ul>
@@ -232,20 +232,20 @@ function get_watch_main($data) {
             <li>
                 <a href="<?php echo $data['base_path'] ?>/choose">
                     CF Students
-                    <span>Desc Here</span>
+                    <span>Resources For Students</span>
                 </a>
             </li>
             <li>
 
                 <a href="<?php echo $data['base_path'] ?>/cfkids">
                     CF Kids
-                    <span>Desc Here</span>
+                    <span>Resources For Parents</span>
                 </a>
             </li>
             <li>
                 <a href="<?php echo $data['base_path'] ?>/small-groups">
                     Small Groups
-                    <span>Desc Here</span>
+                    <span>Video &amp; Discussion Questions</span>
 
                 </a>
             </li>
@@ -284,7 +284,7 @@ function display_series_masthead($data) {
     }
 ?>
 <?php if($data['post']->post_type <> 'cf_devotional') { ?>
-<h2 class="featured" style="background-image: url(<?php echo $main_image_url; ?>)">
+<h2 class="featured" style="background-image: url('<?php echo $main_image_url; ?>')">
 
     <?php if(!empty($meta['video'])) { ?>
         <a class="play" href="<?php echo $meta['video']; ?>" rel="prettyPhoto" title="<?php echo $data['post']->post_title; ?>">
