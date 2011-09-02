@@ -190,48 +190,51 @@ function get_watch_session($data) {
     display_series_masthead($data);
 ?>
 <div id="tabs">
-    <aside class="sidebar">
-        <ul>
-			<?php if(!empty($data['post']->post_content)) { ?>
-            <li><a href="#information" title="Information">Information</a></li>
-			<?php } ?>
-			
+    <section class="series-content">
+        <aside class="sidebar">
+            <ul>
+    			<?php if(!empty($data['post']->post_content)) { ?>
+                <li><a href="#information" title="Information">Information</a></li>
+    			<?php } ?>
+    			
+                <?php if(!empty($data['meta']['small_group'])) { ?>
+                    <li><a href="#small_group" title="Small Group Questions">Small Group Questions</a></li>
+                <?php } ?>
+
+                <?php if(!empty($data['meta']['family_discussion'])) { ?>
+                    <li><a href="#family_discussion" title="Family Discussions">Family Discussions</a></li>
+                <?php } ?>
+
+                <?php if(!empty($data['series']->book_description) && $data['area'] == 'small-groups') { ?>
+                    <li><a href="#recommend" title="Recommended Book">Recommended Book</a></li>
+                <?php } ?>
+            </ul>
+        </aside>
+        <article>
+    		<?php if(!empty($data['post']->post_content)) { ?>
+            <div id="information"><h3 class="series-title"><?php echo $data['post']->post_title; ?></h3><p><?php echo str_replace("\n", "</p><p>",$data['post']->post_content); ?></p></div>
+    		<?php } ?>
+    		
             <?php if(!empty($data['meta']['small_group'])) { ?>
-                <li><a href="#small_group" title="Small Group Questions">Small Group Questions</a></li>
+                <div id="small_group"><h3 class="series-title">Small Group Questions</h3><p><?php echo str_replace("\n", "</p><p>", $data['meta']['small_group']); ?></p></div>
             <?php } ?>
 
             <?php if(!empty($data['meta']['family_discussion'])) { ?>
-                <li><a href="#family_discussion" title="Family Discussions">Family Discussions</a></li>
+                <div id="family_discussion"><h3 class="series-title">Family Discussions</h3><p><?php echo str_replace("\n", "</p><p>", $data['meta']['family_discussion']); ?></p></div>
             <?php } ?>
 
             <?php if(!empty($data['series']->book_description) && $data['area'] == 'small-groups') { ?>
-                <li><a href="#recommend" title="Recommended Book">Recommended Book</a></li>
+                <div id="recommend">
+                    <h3 class="series-title">Recommended Book</h3>
+                    <p><?php echo str_replace("\n", "</p><p>", $data['series']->book_description); ?></p>
+                    
+                    <?php if(!empty($data['series']->book_image_url)) { ?>
+                        <img src="<?php echo $data['series']->book_image_url ?>"/>
+                    <?php } ?>
+                </div>
             <?php } ?>
-        </ul>
-    </aside>
-    <article>
-		<?php if(!empty($data['post']->post_content)) { ?>
-        <div id="information"><p><?php echo str_replace("\n", "</p><p>",$data['post']->post_content); ?></p></div>
-		<?php } ?>
-		
-        <?php if(!empty($data['meta']['small_group'])) { ?>
-            <div id="small_group"><p><?php echo str_replace("\n", "</p><p>", $data['meta']['small_group']); ?></p></div>
-        <?php } ?>
-
-        <?php if(!empty($data['meta']['family_discussion'])) { ?>
-            <div id="family_discussion"><p><?php echo str_replace("\n", "</p><p>", $data['meta']['family_discussion']); ?></p></div>
-        <?php } ?>
-
-        <?php if(!empty($data['series']->book_description) && $data['area'] == 'small-groups') { ?>
-            <div id="recommend">
-                <p><?php echo str_replace("\n", "</p><p>", $data['series']->book_description); ?></p>
-                
-                <?php if(!empty($data['series']->book_image_url)) { ?>
-                    <img src="<?php echo $data['series']->book_image_url ?>"/>
-                <?php } ?>
-            </div>
-        <?php } ?>
-    </article>
+        </article>
+    </section>
 </div>
 
 <nav class="sub-menu watch">
