@@ -285,8 +285,7 @@ function display_series_masthead($data) {
     }
 ?>
 <?php if($data['post']->post_type <> 'cf_devotional') { ?>
-<h2 class="featured">
-    <img width="940" height="290" src="<?php echo $main_image_url; ?>" class="attachment-post-thumbnail wp-post-image" alt="" title="" />
+<h2 class="featured" style="background-image: url(<?php echo $main_image_url; ?>)">
 
     <?php if(!empty($meta['video'])) { ?>
         <a class="play" href="<?php echo $meta['video']; ?>" rel="prettyPhoto" title="<?php echo $data['post']->post_title; ?>">
@@ -299,7 +298,11 @@ function display_series_masthead($data) {
 <div class="sessions">
 <?php if(isset($meta['posts'])) : ?>
     <?php foreach($meta['posts'] as $session) : ?>
-        <a <?php echo $meta['post_id'] == $session->id ? 'class="current"' : '' ?> href="<?php echo $base_path ?>/<?php echo $data['area'] ?>/<?php echo $session->post_name ?>"><?php echo $i++; ?></a>
+        <div>
+            <a <?php echo $meta['post_id'] == $session->id ? 'class="current"' : '' ?> href="<?php echo $base_path ?>/<?php echo $data['area'] ?>/<?php echo $session->post_name ?>">Week 1<?php echo $i++; ?>
+                <span class="session-date">09/09/11</span>
+            </a>
+        </div>
     <?php endforeach; ?>
 <?php endif; ?>
 </div>
