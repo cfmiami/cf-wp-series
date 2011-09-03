@@ -89,21 +89,25 @@ function get_series_content($type, $series, $area, $slug) {
  */
 function display_series_choose() {
     global $wpdb;
-    $series = $wpdb->get_results("select * from cf_series where start_date <= CURRENT_DATE ORDER BY start_date");
+    $series = $wpdb->get_results("select * from cf_series where start_date <= CURRENT_DATE and end_date <= CURRENT_DATE ORDER BY start_date DESC");
     $i = 0;
 ?>
-    <section class="options">
+    <section>
         <nav>
-            <ul class="series three-segments">
+            <ul class="series">
             <?php foreach($series as $item) { ?>
                 <li>
-                    <a href="<?php echo HOMEPATH; ?>/watch/<?php echo $item->slug; ?>">
-                        <?php echo $item->title ?>
+
+                    <a style="float: left; width: 300px;" href="<?php echo HOMEPATH; ?>/watch/<?php echo $item->slug; ?>">
+                        <img width="300" src="<?php echo $item->main_image_url; ?>" />
                     </a>
+                    <div style="float: left; width: 650px; margin: 0 0 20px 10px;">
+                        <h1><?php echo $item->title; ?></h1>
+                        <p>
+                            <?php echo $item->description; ?>
+                        </p>
+                    </div>
                 </li>
-                <?php if($i++ % 3 == 2) { ?>
-                </ul><ul class="series three-segments">
-                <?php } ?>
             <?php } ?>
             </ul>
         </nav>
@@ -244,6 +248,11 @@ function get_watch_session($data) {
                 <li><a href="<?php echo $data['devotionals_path']; ?>/cfstudents">CF Students Devotionals</a></li>
                 <li><a href="<?php echo HOMEPATH; ?>/families/cf-students">CF Students Page</a></li>
                 <li><a href="<?php echo HOMEPATH; ?>/contact/?ministry_area=CF Students">Contact CF Students</a></li>
+            <?php break;
+            case 'cfmiddle': ?>
+                <li><a href="<?php echo $data['devotionals_path']; ?>/cfstudents">CF Students Devotionals</a></li>
+                <li><a href="<?php echo HOMEPATH; ?>/families/cf-kids">CF Kids Page</a></li>
+                <li><a href="<?php echo HOMEPATH; ?>/contact/?ministry_area=CF Kids">Contact CF Kids</a></li>
             <?php break;
             case 'small-groups': ?>
                 <li><a href="<?php echo $data['devotionals_path']; ?>/small-groups">Devotionals</a></li>
