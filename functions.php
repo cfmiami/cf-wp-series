@@ -167,7 +167,6 @@ function get_students_choice($data) {
                 </a>
             </li>
             <li>
-
                 <a href="<?php echo $data['base_path'] ?>/cfmiddle">
                     Middle School
                     <span>Videos, Questions, Devotions &amp; Verses</span>
@@ -276,6 +275,9 @@ function get_watch_session($data) {
  */
 function get_watch_main($data) {
     display_series_masthead($data);
+
+    //CF Middle was not available during every series, check here
+    $middle = get_post_by_type('cf_series_session',  $data['series']->series_id, 'cfmiddle', 1);
 ?>
 
 <section class="series-description">
@@ -288,7 +290,7 @@ function get_watch_main($data) {
     <nav>
         <ul class="three-segments">
             <li>
-                <a href="<?php echo $data['base_path'] ?>/choose">
+                <a href="<?php echo $data['base_path'] ?>/<?php echo count($middle) > 0 ? 'choose' : 'cfstudents' ?>">
                     CF Students
                     <span>Resources For Students</span>
                 </a>
