@@ -192,6 +192,7 @@ function get_students_choice($data) {
 function get_watch_session($data) {
     display_series_masthead($data);
 ?>
+
 <div id="tabs">
     <section class="series-content">
         <aside class="sidebar">
@@ -211,6 +212,22 @@ function get_watch_session($data) {
                 <?php if(!empty($data['series']->book_description) && $data['area'] == 'small-groups') { ?>
                     <li><a href="#recommend" title="Recommended Book">Recommended Book</a></li>
                 <?php } ?>
+            </ul>
+            <ul class="extra">
+                <?php switch($data['area']) {
+                    case 'cfstudents': ?>
+                        <li><a href="<?php echo $data['devotionals_path']; ?>/cfstudents">CF Students Devotionals</a></li>
+                    <?php break;
+                    case 'cfmiddle': ?>
+                        <li><a href="<?php echo $data['devotionals_path']; ?>/cfstudents">CF Students Devotionals</a></li>
+                    <?php break;
+                    case 'small-groups': ?>
+                        <li><a href="<?php echo $data['devotionals_path']; ?>/small-groups">Devotionals</a></li>
+                    <?php break;
+                    case 'cfkids': ?>
+                        <li><a href="<?php echo $data['devotionals_path']; ?>/cfkids">CF Kids Devotionals</a></li>
+                    <?php break;
+                } ?>
             </ul>
         </aside>
         <article>
@@ -239,7 +256,7 @@ function get_watch_session($data) {
         </article>
     </section>
 </div>
-
+    
 <nav class="sub-menu watch">
     <ul class="three-segments">
         <?php switch($data['area']) {
