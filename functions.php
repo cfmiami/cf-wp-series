@@ -228,6 +228,16 @@ function get_watch_session($data) {
                         <li><a href="<?php echo $data['devotionals_path']; ?>/cfkids">CF Kids Devotionals</a></li>
                     <?php break;
                 } ?>
+
+                <?php if( function_exists( 'attachments_get_attachments' ) ) {
+                    $attachments = attachments_get_attachments($data['post']->ID);
+                    $total_attachments = count( $attachments );
+                    if( $total_attachments ) : ?>
+                      <?php for( $i=0; $i<$total_attachments; $i++ ) : ?>
+                        <li><a href="<?php echo $attachments[$i]['location']; ?>"><?php echo $attachments[$i]['title']; ?></a></li>
+                      <?php endfor; ?>
+                    <?php endif; ?>
+                <?php } ?>
             </ul>
         </aside>
         <article>
