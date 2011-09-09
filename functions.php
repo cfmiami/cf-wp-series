@@ -122,15 +122,8 @@ function display_series_choose() {
 function get_devotional_template($data) {
     display_series_masthead($data);
 ?>
-
-<?php if($data['area'] == "small-groups") { ?>
-    <a href="<?php echo $data['devotionals_path']; ?>/grupos-pequenos">Ver los deviocionales en Espanol</a>
-<?php } else if($data['area'] == "grupos-pequenos") { ?>
-    <a href="<?php echo $data['devotionals_path']; ?>/small-groups">See devotionals in English</a>
-<?php } ?>
-
 <article>
-    <h1><?php echo $data['post']->post_title; ?></h1>
+    <h3><?php echo $data['post']->post_title; ?></h3>
     <?php if(!empty($data['meta']['verse'])) { ?>
     <p>Today's Reading Passage: <?php echo $data['meta']['verse']; ?></p>
     <?php } ?>
@@ -310,7 +303,6 @@ function get_watch_main($data) {
 ?>
 
 <section class="series-description">
-    <p><?php echo $data['series']->description ?></p>
 </section>
 
 <h3 class="series-resources">Series Resources for Small Groups, Students, &amp; Kids</h3>
@@ -382,6 +374,9 @@ function display_series_masthead($data) {
             </a>
         <?php } ?>
     </h2>
+    <span class="teaser watch">
+        <p><?php echo $data['series']->description ?></p>
+    </span>
     <div class="sessions">
     <?php if(isset($meta['posts'])) : ?>
 
@@ -404,14 +399,21 @@ function display_series_masthead($data) {
 </div>
 <?php } else { ?>
     <?php if(isset($meta['posts'])) : ?>
-        <select id="devotionals">
-            <?php foreach($meta['posts'] as $session) :
-                $current = $meta['post_id'] == $session->ID;
-                if($current && $current_entity == null) $current_entity = $i; ?>
-                <option <?php echo $current ? 'selected="selected"' : '' ?> value="<?php echo $base_path ?>/<?php echo $data['area'] ?>/<?php echo $session->post_name ?>">Day <?php echo $i++; ?></option>
-            <?php endforeach; ?>
-        </select>
-        <div class="devo-nav"><?php echo $current_entity ?> of <?php echo count($meta['posts']); ?> devotionals</div>
+        <div class="devo-days">
+            <select id="devotionals">
+                <?php foreach($meta['posts'] as $session) :
+                    $current = $meta['post_id'] == $session->ID;
+                    if($current && $current_entity == null) $current_entity = $i; ?>
+                    <option <?php echo $current ? 'selected="selected"' : '' ?> value="<?php echo $base_path ?>/<?php echo $data['area'] ?>/<?php echo $session->post_name ?>">Day <?php echo $i++; ?></option>
+                <?php endforeach; ?>
+            </select>
+        <?php if($data['area'] == "small-groups") { ?>
+            <a href="<?php echo $data['devotionals_path']; ?>/grupos-pequenos" class="localization">Ver los deviocionales en Espanol</a>
+        <?php } else if($data['area'] == "grupos-pequenos") { ?>
+            <a href="<?php echo $data['devotionals_path']; ?>/small-groups" class="localization">See devotionals in English</a>
+        <?php } ?>
+        <div class="devo-nav"><?php/* echo $current_entity */?> of <?php echo count($meta['posts']); ?> devotionals</div>
+        </div>
     <?php endif; ?>
  <?php } ?>
 <?php
