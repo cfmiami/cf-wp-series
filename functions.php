@@ -346,6 +346,7 @@ function get_watch_main($data) {
 function display_series_masthead($data) {
     $meta = $data["meta"];
     $i = 1;
+    $current_entity = null;
     switch($data['post']->post_type) {
         case "cf_series_session": $base_path = $data['base_path']; break;
         case "cf_devotional": $base_path = $data['devotionals_path']; break;
@@ -392,10 +393,13 @@ function display_series_masthead($data) {
 <?php } else { ?>
     <?php if(isset($meta['posts'])) : ?>
         <select id="devotionals">
-        <?php foreach($meta['posts'] as $session) : ?>
-            <option <?php echo $meta['post_id'] == $session->ID ? 'selected="selected"' : '' ?> value="<?php echo $base_path ?>/<?php echo $data['area'] ?>/<?php echo $session->post_name ?>">Day <?php echo $i++; ?></option>
-        <?php endforeach; ?>
+            <?php foreach($meta['posts'] as $session) :
+                $current = $meta['post_id'] == $session->ID;
+                if($current && $current_entity == null) $current_entity = $i; ?>
+                <option <?php echo $current ? 'selected="selected"' : '' ?> value="<?php echo $base_path ?>/<?php echo $data['area'] ?>/<?php echo $session->post_name ?>">Day <?php echo $i++; ?></option>
+            <?php endforeach; ?>
         </select>
+        <div class="devo-nav"><?php echo $current_entity ?> of <?php echo count($meta['posts']); ?> devotionals</div>
     <?php endif; ?>
  <?php } ?>
 <?php
