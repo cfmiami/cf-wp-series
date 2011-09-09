@@ -372,22 +372,30 @@ function display_series_masthead($data) {
     <div class="sessions">
     <?php if(isset($meta['posts'])) : ?>
 
-        <?php foreach($meta['posts'] as $session) : ?>
+        <?php foreach($meta['posts'] as $session) :
+                $current = $meta['post_id'] == $session->ID; ?>
             <div>
-                <a <?php echo $meta['post_id'] == $session->id ? 'class="current"' : '' ?> href="<?php echo $base_path ?>/<?php echo $data['area'] ?>/<?php echo $session->post_name ?>">Week <?php echo $i++; ?>
+                <?php if(!$current) { ?>
+                <a href="<?php echo $base_path ?>/<?php echo $data['area'] ?>/<?php echo $session->post_name ?>">
+                <?php } ?>
+
+                    Week <?php echo $i++; ?>
                     <span class="session-date"><?php echo date('m/d/Y', strtotime($session->post_date)); ?></span>
+                
+                <?php if(!$current) { ?>
                 </a>
+                <?php } ?>
             </div>
         <?php endforeach; ?>
     <?php endif; ?>
 </div>
 <?php } else { ?>
     <?php if(isset($meta['posts'])) : ?>
+        <select id="devotionals">
         <?php foreach($meta['posts'] as $session) : ?>
-            <a <?php echo $meta['post_id'] == $session->id ? 'class="current"' : '' ?> href="<?php echo $base_path ?>/<?php echo $data['area'] ?>/<?php echo $session->post_name ?>">
-                <?php echo $i++; ?>
-            </a>
+            <option <?php echo $meta['post_id'] == $session->ID ? 'selected="selected"' : '' ?> value="<?php echo $base_path ?>/<?php echo $data['area'] ?>/<?php echo $session->post_name ?>">Day <?php echo $i++; ?></option>
         <?php endforeach; ?>
+        </select>
     <?php endif; ?>
  <?php } ?>
 <?php
