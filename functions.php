@@ -137,7 +137,9 @@ function get_devotional_template($data) {
 
     <p><?php echo str_replace("\n", "</p><p>", $data['post']->post_content); ?></p>
 
-    <p>Footer: <?php echo $data['meta']['footer']; ?></p>
+    <?php if(!empty( $data['meta']['footer'])) { ?>
+        <?php echo $data['meta']['footer']; ?>
+    <?php } ?>
 
     <?php if($data['area'] == "small-groups") { ?>
     <p><a target="_blank" href="http://eepurl.com/dBAcr">Receive Devotionals In Your Inbox</a></p>
