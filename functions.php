@@ -308,7 +308,6 @@ function get_watch_main($data) {
 ?>
 
 <section class="series-description">
-    <p><?php echo $data['series']->description ?></p>
 </section>
 
 <h3 class="series-resources">Series Resources for Small Groups, Students, &amp; Kids</h3>
@@ -380,6 +379,9 @@ function display_series_masthead($data) {
             </a>
         <?php } ?>
     </h2>
+    <span class="teaser watch">
+        <p><?php echo $data['series']->description ?></p>
+    </span>
     <div class="sessions">
     <?php if(isset($meta['posts'])) : ?>
 
