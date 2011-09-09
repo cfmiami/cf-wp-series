@@ -131,7 +131,7 @@ function get_devotional_template($data) {
     <p><?php echo str_replace("\n", "</p><p>", $data['post']->post_content); ?></p>
 
     <?php if(!empty( $data['meta']['footer'])) { ?>
-        <?php echo $data['meta']['footer']; ?>
+        <p><?php echo $data['meta']['footer']; ?></p>
     <?php } ?>
 
     <?php if($data['area'] == "small-groups") { ?>
