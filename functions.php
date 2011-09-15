@@ -51,11 +51,14 @@ function get_series_content($type, $series, $area, $slug) {
 
         //Select the current date's devotional. If none, just pick the last one
         foreach($session as $item) {
-            if(substr($item->post_date, 0, 10) == date('Y-m-d')) {
+            if(strtotime(substr($item->post_date, 0, 10)) <= strtotime(date('Y-m-d'))) {
                 $data['post'] = $item;
-                break;
             }
-            
+        }
+
+        //If none, just select the first one
+        if(!$data['post']) {
+            $data['post'] = $session[0];
         }
     } else {
         //Otherwise, get the given slug
