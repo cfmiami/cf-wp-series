@@ -33,7 +33,7 @@ function get_series_content($type, $series, $area, $slug) {
 
     //If there is no series given, default to the current series
     $data['series'] = empty($series) ?
-        $wpdb->get_row("select * from cf_series where CURRENT_DATE between start_date and end_date limit 1") :
+        $wpdb->get_row("select * from cf_series where CURRENT_DATE between start_date and end_date or end_date <= CURRENT_DATE order by end_date DESC limit 1") :
         $wpdb->get_row($wpdb->prepare("select * from cf_series where slug = '%s' limit 1", $series));
 
     //If no area given, default to the "Watch The Sermons" area
@@ -45,9 +45,18 @@ function get_series_content($type, $series, $area, $slug) {
     }
 
     //If no post slug is given, default to the first on of the series/area
+
     if(empty($slug)) {
-        $session = get_post_by_type($type,  $data['series']->series_id, $area, 1);
-        $data['post'] = $session[0];
+        $session = get_post_by_type($type,  $data['series']->series_id, $area);
+
+        //Select the current date's devotional. If none, just pick the last one
+        foreach($session as $item) {
+            if(substr($item->post_date, 0, 10) == date('Y-m-d')) {
+                $data['post'] = $item;
+                break;
+            }
+            
+        }
     } else {
         //Otherwise, get the given slug
         $data['post'] = get_post_by_slug($slug);
@@ -407,11 +416,13 @@ function display_series_masthead($data) {
                     <option <?php echo $current ? 'selected="selected"' : '' ?> value="<?php echo $base_path ?>/<?php echo $data['area'] ?>/<?php echo $session->post_name ?>">Day <?php echo $i++; ?></option>
                 <?php endforeach; ?>
             </select>
+            
         <?php if($data['area'] == "small-groups") { ?>
             <a href="<?php echo $data['devotionals_path']; ?>/grupos-pequenos" class="localization">Ver los deviocionales en Espanol</a>
         <?php } else if($data['area'] == "grupos-pequenos") { ?>
             <a href="<?php echo $data['devotionals_path']; ?>/small-groups" class="localization">See devotionals in English</a>
         <?php } ?>
+
         <div class="devo-nav"><?php/* echo $current_entity */?> of <?php echo count($meta['posts']); ?> devotionals</div>
         </div>
     <?php endif; ?>
@@ -427,6 +438,9 @@ function display_series_masthead($data) {
 function get_post_by_slug($page_slug) {
     if(!empty($page_slug))
     {
+        $page_slug = str_replace("'", "''", $page_slug);
+        $page_slug = str_replace("’", "''", $page_slug);
+
         global $wpdb;
         $page = $wpdb->get_row($wpdb->prepare("select * from wp_posts where post_name = %s", $page_slug));
         if ($page) {
