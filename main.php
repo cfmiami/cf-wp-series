@@ -187,9 +187,7 @@ class CFSeries {
      * @param type $property 
      */
     function save_meta_data($post_id, $property, $value) {
-        if($value != '') {
-            update_post_meta($post_id, $property, $value);
-        }
+        update_post_meta($post_id, $property, $value);
     }
     
     /**
@@ -197,7 +195,11 @@ class CFSeries {
      * @param type $post_id 
      */
     function save($post_id) {
-        
+        //Verify if this is an auto save routine.
+        //If it is, our form has not been submitted, so we don't want to do anything
+        if (defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE)
+            return;
+
         //Custom meta data for devotionals post type
         switch($_POST['post_type']) 
         {
