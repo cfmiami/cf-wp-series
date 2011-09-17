@@ -212,6 +212,7 @@ class CFSeries {
                 $this->save_meta_data($post_id, '_cf_video_url', $_POST['_cf_video_url']);
                 $this->save_meta_data($post_id, '_cf_group_questions', wpautop($_POST['_cf_group_questions']));
                 $this->save_meta_data($post_id, '_cf_family_questions', wpautop($_POST['_cf_family_questions']));
+                $this->save_meta_data($post_id, '_cf_audio_transcript', wpautop($_POST['_cf_audio_transcript']));
                 break;
         }
     }

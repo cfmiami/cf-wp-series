@@ -216,6 +216,10 @@ function get_watch_session($data) {
                     <li><a href="#family_discussion" title="Family Discussions">Family Discussions</a></li>
                 <?php } ?>
 
+                <?php if(!empty($data['meta']['audio_transcript'])) { ?>
+                    <li><a href="#audio_transcript" title="Audio Transcript">Audio Transcript</a></li>
+                <?php } ?>
+
                 <?php if(!empty($data['series']->book_description) && $data['area'] == 'small-groups') { ?>
                     <li><a href="#recommend" title="Recommended Book">Recommended Book</a></li>
                 <?php } ?>
@@ -258,6 +262,10 @@ function get_watch_session($data) {
 
             <?php if(!empty($data['meta']['family_discussion'])) { ?>
                 <div id="family_discussion"><h3 class="series-title">Family Discussions</h3><p><?php echo do_shortcode(str_replace("\n", "</p><p>", $data['meta']['family_discussion'])); ?></p></div>
+            <?php } ?>
+
+            <?php if(!empty($data['meta']['audio_transcript'])) { ?>
+                <div id="audio_transcript"><h3 class="series-title">Audio Transcript</h3><p><?php echo do_shortcode(str_replace("\n", "</p><p>", $data['meta']['audio_transcript'])); ?></p></div>
             <?php } ?>
 
             <?php if(!empty($data['series']->book_description) && $data['area'] == 'small-groups') { ?>
@@ -493,6 +501,7 @@ function get_series_session_meta($id) {
         'video' => get_post_meta($id, '_cf_video_url', true),
         'small_group' => get_post_meta($id, '_cf_group_questions', true),
         'family_discussion' => get_post_meta($id, '_cf_family_questions', true),
+        'audio_transcript' => get_post_meta($id, '_cf_audio_transcript', true),
         'series_id' => get_post_meta($id, '_cf_series', true),
         'post_id' => $id
     );
