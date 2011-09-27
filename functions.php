@@ -320,11 +320,14 @@ function get_watch_main($data) {
 
     //CF Middle was not available during every series, check here
     $middle = get_post_by_type('cf_series_session',  $data['series']->series_id, 'cfmiddle', 1);
+
+    $small_groups = get_post_by_type('cf_series_session',  $data['series']->series_id, 'small-groups', 1);
 ?>
 
 <section class="series-description">
 </section>
 
+<?php if(count($small_groups) > 0) { ?>
 <h3 class="series-resources">Series Resources for Small Groups, Students, &amp; Kids</h3>
 
 <section class="options">
@@ -353,10 +356,18 @@ function get_watch_main($data) {
         </ul>
     </nav>
 </section>
+<?php } ?>
+        
 <nav class="sub-menu watch">
     <ul class="three-segments">
         <li><a target="_blank" href="http://itunes.apple.com/us/podcast/christ-fellowship-miami/id399037659">Subscribe To Our Podcast</a></li>
-        <li><a href="<?php echo $data['devotionals_path']; ?>">Devotionals</a></li>
+        <li>
+            <?php if(count($small_groups) > 0) { ?>
+                <a href="<?php echo $data['devotionals_path']; ?>">Devotionals</a>
+            <?php } else { ?>
+                <a href="<?php echo HOMEPATH; ?>/watch">Current Series</a>
+            <?php } ?>
+        </li>
         <li><a href="<?php echo HOMEPATH; ?>/watch/series">Previous Series</a></li>
     </ul>
 </nav>
