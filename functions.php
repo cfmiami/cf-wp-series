@@ -147,7 +147,7 @@ function get_devotional_template($data) {
     <?php } ?>
 
     <?php if($data['area'] == "small-groups") { ?>
-    <p><a target="_blank" href="http://eepurl.com/dBAcr">Receive Devotionals In Your Inbox</a></p>
+    <p class="subscribe"><a target="_blank" href="http://eepurl.com/dBAcr">Subscribe via Email</a></p>
     <?php } ?>
 </article>
 <?php 
