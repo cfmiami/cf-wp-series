@@ -4,14 +4,8 @@
  * Register scripts and styles for the watch page
  */
 function cf_series_scripts() {
-    $svr_uri = $_SERVER['REQUEST_URI'];
+    echo '<style>.ui-tabs-hide { display: none; }</style>';
 
-    //if ( strstr($svr_uri, 'watch')) {
-        echo '<style>.ui-tabs-hide { display: none; }</style>';
-        
-        wp_enqueue_style('prettyphoto-css', JAVASCRIPTSPATH .'libs/prettyphoto/css/prettyPhoto.css', false, '1.0.0', 'screen' );
-        wp_enqueue_script('prettyphoto-js', JAVASCRIPTSPATH .'libs/prettyphoto/js/jquery.prettyPhoto.js', array('jquery', 'jquery-ui-tabs'));
-   //}
 }
 add_action('wp_print_styles', 'cf_series_scripts');
 
