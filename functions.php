@@ -18,30 +18,16 @@ add_action('wp_print_styles', 'cf_series_scripts');
  */
 function get_series_content($type, $series, $area, $slug) {
     global $wpdb;
-    $data = array();
-
-    if($series == 'series') {
-        display_series_choose();
-        return;
-    }
 
     //If there is no series given, default to the current series
-    $data['series'] = empty($series) ?
+    $results = empty($series) ?
         $wpdb->get_row("select * from cf_series where CURRENT_DATE between start_date and end_date or end_date <= CURRENT_DATE order by end_date DESC limit 1") :
         $wpdb->get_row($wpdb->prepare("select * from cf_series where slug = '%s' limit 1", $series));
-
-    //If no area given, default to the "Watch The Sermons" area
-    if(empty($area)) {
-        switch($type) {
-            case "cf_series_session": $area = 'sermons'; break;
-            case "cf_devotional": $area = 'small-groups'; break;
-        }
-    }
 
     //If no post slug is given, default to the first on of the series/area
 
     if(empty($slug)) {
-        $session = get_post_by_type($type,  $data['series']->series_id, $area);
+        $session = get_post_by_type($type,  $results->series_id, $area);
 
         //Select the current date's devotional. If none, just pick the last one
         foreach($session as $item) {
@@ -51,399 +37,15 @@ function get_series_content($type, $series, $area, $slug) {
         }
 
         //If none, just select the first one
-        if(!$data['post']) {
-            $data['post'] = $session[0];
+        if(!$post) {
+            $post = $session[0];
         }
     } else {
         //Otherwise, get the given slug
-        $data['post'] = get_post_by_slug($slug);
+        $post = get_post_by_slug($slug);
     }
 
-    if($data['post']) {
-        switch($type) {
-            case "cf_series_session": $data['meta'] = get_series_session_meta($data['post']->ID); break;
-            case "cf_devotional": $data['meta'] = get_devotional_meta($data['post']->ID); break;
-        }
-
-    }
-
-    $data['base_path'] = HOMEPATH . '/watch/'. $data['series']->slug;
-    $data['devotionals_path'] = str_replace('/watch/', '/devotionals/', $data['base_path']);
-    $data['area'] = $area;
-
-    //Determine the content type to display. Each page type is dynamically created
-    //based on the information in the series plugin.
-    switch($type) {
-        case "cf_series_session":
-            if($area == 'sermons') {
-                get_watch_main($data);
-            } else if($area == "choose") {
-                get_students_choice($data);
-            } else {
-                get_watch_session($data);
-            }
-            break;
-
-        case "cf_devotional":
-            get_devotional_template($data);
-            break;
-    }
-}
-
-/**
- * Displays a screen which allows the user to choose between all past and current series
- */
-function display_series_choose() {
-    global $wpdb;
-    $series = $wpdb->get_results("select * from cf_series where start_date <= CURRENT_DATE and end_date <= CURRENT_DATE ORDER BY start_date DESC");
-    $i = 0;
-?>
-    <section>
-        <nav>
-            <ul class="series">
-            <?php foreach($series as $item) { ?>
-                <li>
-
-                    <a style="float: left; width: 300px;" href="<?php echo HOMEPATH; ?>/watch/<?php echo $item->slug; ?>">
-                        <img width="300" src="<?php echo $item->main_image_url; ?>" />
-                    </a>
-                    <div style="float: left; width: 650px; margin: 0 0 20px 10px;">
-                        <h1><?php echo $item->title; ?></h1>
-                        <p>
-                            <?php echo $item->description; ?>
-                        </p>
-                    </div>
-                </li>
-            <?php } ?>
-            </ul>
-        </nav>
-    </section>
-<?php
-}
-
-/**
- * Displays the devotional
- * @param $data Contains data needed to render the template
- */
-function get_devotional_template($data) {
-    display_series_masthead($data);
-?>
-<article>
-    <h3><?php echo $data['post']->post_title; ?></h3>
-    <?php if(!empty($data['meta']['verse'])) { ?>
-    <p>Today's Reading Passage: <?php echo $data['meta']['verse']; ?></p>
-    <?php } ?>
-
-    <p><?php echo str_replace("\n", "</p><p>", $data['post']->post_content); ?></p>
-
-    <?php if(!empty( $data['meta']['footer'])) { ?>
-        <p><?php echo $data['meta']['footer']; ?></p>
-    <?php } ?>
-
-    <?php if($data['area'] == "small-groups") { ?>
-    <p class="subscribe"><a target="_blank" href="http://eepurl.com/dBAcr">Subscribe via Email</a></p>
-    <?php } ?>
-</article>
-<?php 
-}
-
-/**
- * Allows a user to choose between high school and middle school series sessions
- * @param $data Contains data needed to render the template
- */
-function get_students_choice($data) {
-    display_series_masthead($data);
-?>
-<section class="series-description">
-    <p>CF Students has programs for both high school &amp; middle school.</p>
-</section>
-
-<section class="options">
-    <nav>
-        <ul class="two-segments">
-            <li>
-                <a href="<?php echo $data['base_path'] ?>/cfstudents">
-                    High School
-                    <span>Videos, Questions, Devotions &amp; Verses</span>
-                </a>
-            </li>
-            <li>
-                <a href="<?php echo $data['base_path'] ?>/cfmiddle">
-                    Middle School
-                    <span>Videos, Questions, Devotions &amp; Verses</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
-</section>
-<nav class="sub-menu watch">
-    <ul class="three-segments">
-        <li><a href="<?php echo $data['devotionals_path']; ?>/cfstudents">CF Student Devotionals</a></li>
-        <li><a href="<?php echo HOMEPATH; ?>/families/cf-students">CF Students Page</a></li>
-        <li><a href="<?php echo HOMEPATH; ?>/contact/?ministry_area=CF Students">Contact CF Students</a></li>
-    </ul>
-</nav>
-<?php
-}
-
-/**
- * Displays the template for all series sessions except "Watch The Series"
- * @param $data Contains data needed for the template
- */
-function get_watch_session($data) {
-    display_series_masthead($data);
-?>
-
-<div id="tabs">
-    <section class="series-content">
-        <aside class="sidebar">
-            <ul>
-    			<?php if(!empty($data['post']->post_content)) { ?>
-                <li><a href="#information" title="Information">Information</a></li>
-    			<?php } ?>
-    			
-                <?php if(!empty($data['meta']['small_group'])) { ?>
-                    <li><a href="#small_group" title="Small Group Questions">Small Group Questions</a></li>
-                <?php } ?>
-
-                <?php if(!empty($data['meta']['family_discussion'])) { ?>
-                    <li><a href="#family_discussion" title="Family Discussions">Family Discussions</a></li>
-                <?php } ?>
-
-                <?php if(!empty($data['meta']['audio_transcript'])) { ?>
-                    <li><a href="#audio_transcript" title="Audio Transcript">Audio Transcript</a></li>
-                <?php } ?>
-
-                <?php if(!empty($data['series']->book_description) && $data['area'] == 'small-groups') { ?>
-                    <li><a href="#recommend" title="Recommended Book">Recommended Book</a></li>
-                <?php } ?>
-            </ul>
-            <ul class="extra">
-                <?php switch($data['area']) {
-                    case 'cfstudents': ?>
-                        <li><a href="<?php echo $data['devotionals_path']; ?>/cfstudents">CF Students Devotionals</a></li>
-                    <?php break;
-                    case 'cfmiddle': ?>
-                        <li><a href="<?php echo $data['devotionals_path']; ?>/cfstudents">CF Students Devotionals</a></li>
-                    <?php break;
-                    case 'small-groups': ?>
-                        <li><a href="<?php echo $data['devotionals_path']; ?>/small-groups">Devotionals</a></li>
-                    <?php break;
-                    case 'cfkids': ?>
-                        <li><a href="<?php echo $data['devotionals_path']; ?>/cfkids">CF Kids Devotionals</a></li>
-                    <?php break;
-                } ?>
-
-                <?php if( function_exists( 'attachments_get_attachments' ) ) {
-                    $attachments = attachments_get_attachments($data['post']->ID);
-                    $total_attachments = count( $attachments );
-                    if( $total_attachments ) : ?>
-                      <?php for( $i=0; $i<$total_attachments; $i++ ) : ?>
-                        <li><a href="<?php echo $attachments[$i]['location']; ?>"><?php echo $attachments[$i]['title']; ?></a></li>
-                      <?php endfor; ?>
-                    <?php endif; ?>
-                <?php } ?>
-            </ul>
-        </aside>
-        <article>
-    		<?php if(!empty($data['post']->post_content)) { ?>
-            <div id="information"><h3 class="series-title"><?php echo $data['post']->post_title; ?></h3><p><?php echo do_shortcode(str_replace("\n", "</p><p>",$data['post']->post_content)); ?></p></div>
-    		<?php } ?>
-    		
-            <?php if(!empty($data['meta']['small_group'])) { ?>
-                <div id="small_group"><h3 class="series-title">Small Group Questions</h3><p><?php echo do_shortcode(str_replace("\n", "</p><p>", $data['meta']['small_group'])); ?></p></div>
-            <?php } ?>
-
-            <?php if(!empty($data['meta']['family_discussion'])) { ?>
-                <div id="family_discussion"><h3 class="series-title">Family Discussions</h3><p><?php echo do_shortcode(str_replace("\n", "</p><p>", $data['meta']['family_discussion'])); ?></p></div>
-            <?php } ?>
-
-            <?php if(!empty($data['meta']['audio_transcript'])) { ?>
-                <div id="audio_transcript"><h3 class="series-title">Audio Transcript</h3><p><?php echo do_shortcode(str_replace("\n", "</p><p>", $data['meta']['audio_transcript'])); ?></p></div>
-            <?php } ?>
-
-            <?php if(!empty($data['series']->book_description) && $data['area'] == 'small-groups') { ?>
-                <div id="recommend">
-                    <h3 class="series-title">Recommended Book</h3>
-                    <p><?php echo do_shortcode(str_replace("\n", "</p><p>", $data['series']->book_description)); ?></p>
-                    
-                    <?php if(!empty($data['series']->book_image_url)) { ?>
-                        <img src="<?php echo $data['series']->book_image_url ?>"/>
-                    <?php } ?>
-                </div>
-            <?php } ?>
-        </article>
-    </section>
-</div>
-    
-<nav class="sub-menu watch">
-    <ul class="three-segments">
-        <?php switch($data['area']) {
-            case 'cfstudents': ?>
-                <li><a href="<?php echo $data['devotionals_path']; ?>/cfstudents">CF Students Devotionals</a></li>
-                <li><a href="<?php echo HOMEPATH; ?>/families/cf-students">CF Students Page</a></li>
-                <li><a href="<?php echo HOMEPATH; ?>/contact/?ministry_area=CF Students">Contact CF Students</a></li>
-            <?php break;
-            case 'cfmiddle': ?>
-                <li><a href="<?php echo $data['devotionals_path']; ?>/cfstudents">CF Students Devotionals</a></li>
-                <li><a href="<?php echo HOMEPATH; ?>/families/cf-kids">CF Kids Page</a></li>
-                <li><a href="<?php echo HOMEPATH; ?>/contact/?ministry_area=CF Kids">Contact CF Kids</a></li>
-            <?php break;
-            case 'small-groups': ?>
-                <li><a href="<?php echo $data['devotionals_path']; ?>/small-groups">Devotionals</a></li>
-                <li><a href="<?php echo HOMEPATH; ?>/small-groups">Small Groups Page</a></li>
-                <li><a href="<?php echo HOMEPATH; ?>/contact/?ministry_area=Small Groups">Contact Small Groups</a></li>
-            <?php break;
-            case 'cfkids': ?>
-                <li><a href="<?php echo $data['devotionals_path']; ?>/cfkids">CF Kids Devotionals</a></li>
-                <li><a href="<?php echo HOMEPATH; ?>/families/cf-kids">CF Kids Page</a></li>
-                <li><a href="<?php echo HOMEPATH; ?>/contact/?ministry_area=CF Kids">Contact CF Kids</a></li>
-            <?php break;
-        } ?>
-    </ul>
-</nav>
-<?php
-}
-
-/**
- * Displays the template for the main "Watch The Series" page
- * @param $data Contains data needed for the template
- */
-function get_watch_main($data) {
-    display_series_masthead($data);
-
-    //CF Middle was not available during every series, check here
-    $middle = get_post_by_type('cf_series_session',  $data['series']->series_id, 'cfmiddle', 1);
-
-    $small_groups = get_post_by_type('cf_series_session',  $data['series']->series_id, 'small-groups', 1);
-?>
-
-<section class="series-description">
-</section>
-
-<?php if(count($small_groups) > 0) { ?>
-<h3 class="series-resources">Series Resources for Small Groups, Students, &amp; Kids</h3>
-
-<section class="options">
-    <nav>
-        <ul class="three-segments">
-            <li>
-                <a href="<?php echo $data['base_path'] ?>/<?php echo count($middle) > 0 ? 'choose' : 'cfstudents' ?>">
-                    CF Students
-                    <span>Resources For Students</span>
-                </a>
-            </li>
-            <li>
-
-                <a href="<?php echo $data['base_path'] ?>/cfkids">
-                    CF Kids
-                    <span>Resources For Parents</span>
-                </a>
-            </li>
-            <li>
-                <a href="<?php echo $data['base_path'] ?>/small-groups">
-                    Small Groups
-                    <span>Video &amp; Discussion Questions</span>
-
-                </a>
-            </li>
-        </ul>
-    </nav>
-</section>
-<?php } ?>
-        
-<nav class="sub-menu watch">
-    <ul class="three-segments">
-        <li><a target="_blank" href="http://itunes.apple.com/us/podcast/christ-fellowship-miami/id399037659">Subscribe To Our Podcast</a></li>
-        <li>
-            <?php if(count($small_groups) > 0) { ?>
-                <a href="<?php echo $data['devotionals_path']; ?>">Devotionals</a>
-            <?php } else { ?>
-                <a href="<?php echo HOMEPATH; ?>/watch">Current Series</a>
-            <?php } ?>
-        </li>
-        <li><a href="<?php echo HOMEPATH; ?>/watch/series">Previous Series</a></li>
-    </ul>
-</nav>
-<?php
-}
-
-/**
- * Displays the top portion of a series session
- * @param $data Contains data needed to display the masthead
- */
-function display_series_masthead($data) {
-    $meta = $data["meta"];
-    $i = 1;
-    $current_entity = null;
-    switch($data['post']->post_type) {
-        case "cf_series_session": $base_path = $data['base_path']; break;
-        case "cf_devotional": $base_path = $data['devotionals_path']; break;
-    }
-
-    //Get the series image to display
-    if($data['area'] == 'cfkids') {
-        $main_image_url = $data['series']->kids_image_url ;
-    }
-
-    if(empty($main_image_url)) {
-        $main_image_url = $data['series']->main_image_url;
-    }
-?>
-<?php if($data['post']->post_type <> 'cf_devotional') { ?>
-    <h2 class="featured" style="background-image: url('<?php echo $main_image_url; ?>')">
-
-        <?php if(!empty($meta['video'])) { ?>
-            <a class="play" href="<?php echo $meta['video']; ?>" rel="prettyPhoto" title="<?php echo $data['post']->post_title; ?>">
-                <span class="play-video"><span><?php echo $data['post']->post_title; ?></span></span>
-            </a>
-        <?php } ?>
-    </h2>
-    <span class="teaser watch">
-        <p><?php echo $data['series']->description ?></p>
-    </span>
-    <div class="sessions">
-    <?php if(isset($meta['posts'])) : ?>
-
-        <?php foreach($meta['posts'] as $session) :
-                $current = $meta['post_id'] == $session->ID; ?>
-            <div>
-                <?php if(!$current) { ?>
-                <a href="<?php echo $base_path ?>/<?php echo $data['area'] ?>/<?php echo $session->post_name ?>">
-                <?php } ?>
-
-                    Week <?php echo $i++; ?>
-                    <span class="session-date"><?php echo date('m/d/Y', strtotime($session->post_date)); ?></span>
-                
-                <?php if(!$current) { ?>
-                </a>
-                <?php } ?>
-            </div>
-        <?php endforeach; ?>
-    <?php endif; ?>
-</div>
-<?php } else { ?>
-    <?php if(isset($meta['posts'])) : ?>
-        <div class="devo-days">
-            <select id="devotionals">
-                <?php foreach($meta['posts'] as $session) :
-                    $current = $meta['post_id'] == $session->ID;
-                    if($current && $current_entity == null) $current_entity = $i; ?>
-                    <option <?php echo $current ? 'selected="selected"' : '' ?> value="<?php echo $base_path ?>/<?php echo $data['area'] ?>/<?php echo $session->post_name ?>">Day <?php echo $i++; ?></option>
-                <?php endforeach; ?>
-            </select>
-            
-        <?php if($data['area'] == "small-groups") { ?>
-            <a href="<?php echo $data['devotionals_path']; ?>/grupos-pequenos" class="localization">Ver los deviocionales en Espanol</a>
-        <?php } else if($data['area'] == "grupos-pequenos") { ?>
-            <a href="<?php echo $data['devotionals_path']; ?>/small-groups" class="localization">See devotionals in English</a>
-        <?php } ?>
-
-        <div class="devo-nav"><?php/* echo $current_entity */?> of <?php echo count($meta['posts']); ?> devotionals</div>
-        </div>
-    <?php endif; ?>
- <?php } ?>
-<?php
+    return $post;
 }
 
 /**
@@ -516,6 +118,7 @@ function get_series_session_meta($id) {
     foreach(wp_get_post_terms($id, 'series_area') as $term) {
         array_push($session_areas, $term->slug);
         $meta['area'] .= $term->name;
+        $meta['areacode'] .= $term->slug;
     }
 
     //Get series sessions
@@ -547,6 +150,7 @@ function get_devotional_meta($id) {
     foreach(wp_get_post_terms($id, 'series_area') as $term) {
         array_push($session_areas, $term->slug);
         $meta['area'] .= $term->name;
+        $meta['areacode'] .= $term->slug;
     }
 
     //Get devotionals
