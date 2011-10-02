@@ -25,14 +25,13 @@ function get_series_content($type, $series, $area, $slug) {
         $wpdb->get_row($wpdb->prepare("select * from cf_series where slug = '%s' limit 1", $series));
 
     //If no post slug is given, default to the first on of the series/area
-
     if(empty($slug)) {
         $session = get_post_by_type($type,  $results->series_id, $area);
 
         //Select the current date's devotional. If none, just pick the last one
         foreach($session as $item) {
             if(strtotime(substr($item->post_date, 0, 10)) <= strtotime(date('Y-m-d'))) {
-                $data['post'] = $item;
+                $post = $item;
             }
         }
 
@@ -85,7 +84,7 @@ select p.* from wp_term_relationships tr
     inner join wp_posts p on p.id = tr.object_id
     inner join wp_postmeta pm on pm.post_id = p.id and pm.meta_key = '_cf_series' and pm.meta_value = '%s'
 where tt.taxonomy = 'series_area' and t.slug = '%s'
-    /* and p.post_status = 'publish' */
+    and p.post_status <> 'trash'
     and p.post_type = '%s'
 order by p.post_date
 ";
@@ -118,7 +117,7 @@ function get_series_session_meta($id) {
     foreach(wp_get_post_terms($id, 'series_area') as $term) {
         array_push($session_areas, $term->slug);
         $meta['area'] .= $term->name;
-        $meta['areacode'] .= $term->slug;
+        $meta['areacode'] .= $term->slug; 
     }
 
     //Get series sessions
