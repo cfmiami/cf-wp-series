@@ -1,5 +1,4 @@
 <?php
-
 class Devotional {
     public $post_type = 'cf_devotional';
     
@@ -81,4 +80,3 @@ class Devotional {
         <?php 
     }
 }
-?>

@@ -1,5 +1,4 @@
 <?php
-
 class SeriesSession {
     public $post_type = 'cf_series_session';
   
@@ -114,4 +113,3 @@ class SeriesSession {
         <?php 
     }
 }
-?>

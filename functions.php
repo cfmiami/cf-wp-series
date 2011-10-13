@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Register scripts and styles for the watch page
  */
@@ -44,7 +43,22 @@ function get_series_content($type, $series, $area, $slug) {
         $post = get_post_by_slug($slug);
     }
 
-    return $post;
+    switch($type){
+        case "cf_devotional":
+            $meta = get_devotional_meta($post->ID);
+            break;
+        
+        case "cf_series_session":
+            $meta = get_series_session_meta($post->ID);
+            break;
+    }
+    
+    $meta['series'] = $results;
+    
+    return array(
+       'post' => $post,
+       'meta' => $meta
+    );
 }
 
 /**

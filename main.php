@@ -267,4 +267,3 @@ class CFSeries {
 $cfseries = new CFSeries();
 
 include_once('functions.php');
-?>
