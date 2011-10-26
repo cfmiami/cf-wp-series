@@ -10,7 +10,7 @@ class SeriesSession {
             'public' => true,
             'query_var' => 'session',
             'rewrite' => array(
-                'slug' => 'sessions',
+                'slug' => 'watch',
                 'with_front' => false
             ),
             'supports' => array(

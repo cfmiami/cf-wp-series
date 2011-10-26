@@ -23,6 +23,10 @@ function get_series_content($type, $series, $area, $slug) {
         $wpdb->get_row("select * from cf_series where CURRENT_DATE between start_date and end_date or end_date <= CURRENT_DATE order by end_date DESC limit 1") :
         $wpdb->get_row($wpdb->prepare("select * from cf_series where slug = '%s' limit 1", $series));
 
+    if(empty($results)) {
+        $slug = $series;
+    }
+    
     //If no post slug is given, default to the first on of the series/area
     if(empty($slug)) {
         $session = get_post_by_type($type,  $results->series_id, $area);
@@ -53,9 +57,11 @@ function get_series_content($type, $series, $area, $slug) {
             break;
     }
     
-    $meta['series'] = $results;
-    
+    if(empty($results)) {
+        $results = $meta['series'];
+    }
     return array(
+       'series_info' => $results,
        'post' => $post,
        'meta' => $meta
     );
@@ -131,7 +137,7 @@ function get_series_session_meta($id) {
     foreach(wp_get_post_terms($id, 'series_area') as $term) {
         array_push($session_areas, $term->slug);
         $meta['area'] .= $term->name;
-        $meta['areacode'] .= $term->slug; 
+        $meta['areacode'] .= $term->slug;
     }
 
     //Get series sessions
@@ -163,7 +169,7 @@ function get_devotional_meta($id) {
     foreach(wp_get_post_terms($id, 'series_area') as $term) {
         array_push($session_areas, $term->slug);
         $meta['area'] .= $term->name;
-        $meta['areacode'] .= $term->slug;
+        $meta['areacode'] .= $term->slug;        
     }
 
     //Get devotionals
