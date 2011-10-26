@@ -8,6 +8,42 @@ function cf_series_scripts() {
 }
 add_action('wp_print_styles', 'cf_series_scripts');
 
+function get_post_details($id) {
+    global $wpdb;
+    global $post;
+    
+    $series = get_post_meta($id, '_cf_series', true);
+    $series = $wpdb->get_row($wpdb->prepare("select * from cf_series where series_id = %s", $series));
+
+    $session_areas = array();
+    $meta = array();
+    foreach(wp_get_post_terms($id, 'series_area') as $term) {
+        array_push($session_areas, $term->name);
+    }
+
+    if(!empty($series->title)) {
+        array_push($meta, $series->title);
+    }
+
+    if(!empty($session_areas)) {
+        array_push($meta, implode(', ', $session_areas));
+    }
+  
+    switch($post->post_type) {
+        case "cf_devotional":
+            array_push($meta, 'Devotional');
+            break;
+        
+        case "cf_series_session":
+            array_push($meta, 'Teaching');
+            break;
+        
+        default:
+            array_push($meta, 'Page');
+    }
+    
+    return $meta;
+}
 /**
  * Gets the page template for the given series info
  * @param $type Determines whether it is a devotional or series session
