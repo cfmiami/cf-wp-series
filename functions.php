@@ -163,7 +163,6 @@ function get_series_session_meta($id) {
         'video' => get_post_meta($id, '_cf_video_url', true),
         'small_group' => get_post_meta($id, '_cf_group_questions', true),
         'family_discussion' => get_post_meta($id, '_cf_family_questions', true),
-        'audio_transcript' => get_post_meta($id, '_cf_audio_transcript', true),
         'series_id' => get_post_meta($id, '_cf_series', true),
         'post_id' => $id
     );

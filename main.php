@@ -26,13 +26,15 @@ class CFSeries {
      * Adds css and javascript files needed for this plugins to the admin pages
      */
     public function include_resources() {
-        $plugin_url = plugin_dir_url(__FILE__);
-        wp_enqueue_style('jqueryui', $plugin_url . 'css/smoothness/jquery-ui-1.8.13.custom.css');
-        wp_enqueue_style('data-tables-style', $plugin_url . 'css/dataTables.css');
-        wp_enqueue_script('data-tables', $plugin_url . 'js/jquery.dataTables.min.js', array('jquery'));
-        wp_enqueue_script('jquery-core-ui', $plugin_url . 'js/jquery-ui-1.8.13.custom.min.js');
-        wp_enqueue_script('forms', $plugin_url . 'js/jquery.form.js');
-        wp_enqueue_script('series', $plugin_url . 'js/series.js', array('jquery', 'jquery-ui-core'));
+        if(strstr($_SERVER['REQUEST_URI'], 'Series.php')) {
+            $plugin_url = plugin_dir_url(__FILE__);
+            wp_enqueue_style('jqueryui', $plugin_url . 'css/smoothness/jquery-ui-1.8.13.custom.css');
+            wp_enqueue_style('data-tables-style', $plugin_url . 'css/dataTables.css');
+            wp_enqueue_script('data-tables', $plugin_url . 'js/jquery.dataTables.min.js', array('jquery'));
+            wp_enqueue_script('jquery-core-ui', $plugin_url . 'js/jquery-ui-1.8.13.custom.min.js');
+            wp_enqueue_script('forms', $plugin_url . 'js/jquery.form.js');
+            wp_enqueue_script('series', $plugin_url . 'js/series.js', array('jquery', 'jquery-ui-core'));
+        }
     }
     
     /**
@@ -53,7 +55,7 @@ class CFSeries {
         
         if(version_compare($wp_version, "3.1", "<")) {
             deactivate_plugins(basename(__FILE__));
-            wp_die("This plugin requires WordPress version 2.9 or higher.");
+            wp_die("This plugin requires WordPress version 3.1 or higher.");
         }
         
         //Add the series table
@@ -214,7 +216,6 @@ class CFSeries {
                 $this->save_meta_data($post_id, '_cf_video_url', $_POST['_cf_video_url']);
                 $this->save_meta_data($post_id, '_cf_group_questions', wpautop($_POST['_cf_group_questions']));
                 $this->save_meta_data($post_id, '_cf_family_questions', wpautop($_POST['_cf_family_questions']));
-                $this->save_meta_data($post_id, '_cf_audio_transcript', wpautop($_POST['_cf_audio_transcript']));
                 break;
         }
     }

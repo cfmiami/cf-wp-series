@@ -47,19 +47,6 @@ class SeriesSession {
 
         add_meta_box('family', 'Family Discussion Questions', array($this, 'family_questions'),
                 $this->post_type, 'normal', 'high');
-
-        add_meta_box('audio_transcript', 'Audio Transcript', array($this, 'audio_transcript'),
-                $this->post_type, 'normal', 'high');
-    }
-
-    function audio_transcript($session) {
-        $transcript = get_post_meta($session->ID, '_cf_audio_transcript', true);
-
-        ?>
-        <div class="customEditor">
-            <textarea name="_cf_audio_transcript" style="width: 100%;" rows="5"><?php echo $transcript ?></textarea>
-        </div>
-        <?php
     }
 
     function small_group_questions($session) {
